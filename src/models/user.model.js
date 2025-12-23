@@ -1,22 +1,33 @@
-import mongoose, { Schema } from "mongoose";
+import { poolPromise, sql } from "../config/db.js";
 
-const userSchema = new Schema({
+export const UserModel = {
 
-  name: {
-    type: String,
-    required: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  
-   
-}, { timestamps: true });
+  async findByUsername(username) {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("Username", sql.NVarChar, username)
+      .query(`
+        SELECT * FROM Users
+        WHERE Username = @Username
+      `);
 
-export const User = mongoose.model("User", userSchema);
+    return result.recordset[0];
+  },
+
+  async create(user) {
+    const pool = await poolPromise;
+    await pool.request()
+      .input("Username", sql.NVarChar, user.Username)
+      .input("Password", sql.NVarChar, user.Password)
+      .input("Role", sql.NVarChar, user.Role)
+      .input("LinkedID", sql.Int, user.LinkedID)
+      .input("isActive", sql.Bit, user.isActive)
+      .query(`
+        INSERT INTO Users
+        (Username, Password, Role, LinkedID, isActive, createdAt)
+        VALUES
+        (@Username, @Password, @Role, @LinkedID, @isActive, GETDATE())
+      `);
+  }
+
+};

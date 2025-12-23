@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import authRouter from "./routes/auth.routes.js";
+import studentRoutes from "./routes/studentAuth.routes.js";
+import userAuthRoutes from "./routes/userAuth.routes.js";
 import swaggerUi from "swagger-ui-express"
 import { readFileSync } from "fs";
 // import swaggerDocument  from "./swagger-output.json" assert { type: 'json' };
@@ -14,6 +15,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+
+app.use("/api/student", studentRoutes);
+app.use("/api/user", userAuthRoutes);
 
 // app.use("/api/auth", authRouter);
 app.get("/test-db", async (req, res) => {
