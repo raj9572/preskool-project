@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import studentRoutes from "./routes/studentAuth.routes.js";
 import staffRoutes from "./routes/staff.routes.js";
+import teacherRoutes from "./routes/teacher.routes.js";
 import userAuthRoutes from "./routes/userAuth.routes.js";
 import swaggerUi from "swagger-ui-express"
 import { readFileSync } from "fs";
@@ -21,7 +22,9 @@ app.use(express.json());
 
 app.use("/api/student", studentRoutes);
 app.use("/api/user", userAuthRoutes);
-app.use("/api", staffRoutes);
+app.use("/api/staff", staffRoutes);
+app.use("/api/teacher", teacherRoutes);
+
 
 
 // app.use("/api/auth", authRouter);
