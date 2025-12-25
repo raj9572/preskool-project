@@ -2,12 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import studentRoutes from "./routes/studentAuth.routes.js";
+import staffRoutes from "./routes/staff.routes.js";
 import userAuthRoutes from "./routes/userAuth.routes.js";
 import swaggerUi from "swagger-ui-express"
 import { readFileSync } from "fs";
 // import swaggerDocument  from "./swagger-output.json" assert { type: 'json' };
 // import { connectDB } from "./config/db.js";
 import { poolPromise } from "./config/db.js";
+import { swaggerDocs } from "./swagger.js";
 
 dotenv.config();
 
@@ -19,6 +21,8 @@ app.use(express.json());
 
 app.use("/api/student", studentRoutes);
 app.use("/api/user", userAuthRoutes);
+app.use("/api", staffRoutes);
+
 
 // app.use("/api/auth", authRouter);
 app.get("/test-db", async (req, res) => {
@@ -35,11 +39,14 @@ app.get("/test-db", async (req, res) => {
 });
 
 
-const swaggerDocument = JSON.parse(
-  readFileSync(new URL("./swagger-output.json", import.meta.url), "utf-8")
-);
+// Swagger
+swaggerDocs(app);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// const swaggerDocument = JSON.parse(
+//   readFileSync(new URL("./swagger-output.json", import.meta.url), "utf-8")
+// );
+
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 // connectDB()

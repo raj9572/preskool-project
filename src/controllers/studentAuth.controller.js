@@ -26,18 +26,18 @@ export const StudentController = {
   },
 
   // CREATE OR UPDATE (SAME ENDPOINT)
-  async save(req, res) {
+  async createAndUpdateStudent(req, res) {
     try {
-      const { id } = req.params;
+      const {studentID} = req.body;
 
       
 
-      if (id) {
-        const student = await StudentModel.findById(id);
+      if (studentID) {
+        const student = await StudentModel.findById(studentID);
         if (!student) {
           return res.status(404).json({ success: false, message: "Student not found" });
         }
-        await StudentModel.updateById(id, req.body);
+        await StudentModel.updateById(studentID, req.body);
         return res.json({ success: true, message: "Student updated successfully" });
       }
 

@@ -70,53 +70,38 @@ export const StudentModel = {
     return result.recordset[0];
   },
 
-  async create(student) {
-    const pool = await poolPromise;
-    await pool.request()
-      .input("FullName", sql.NVarChar, student.FullName)
-      .input("EmailAddress", sql.VarChar, student.EmailAddress)
-      .input("DOB", sql.Date, student.DOB)
-      .input("Gender", sql.NVarChar, student.Gender)
-      .input("ClassID", sql.VarChar, student.ClassID)
-      .input("SectionID", sql.VarChar, student.SectionID)
-      .input("Address", sql.VarChar, student.Address)
-      .input("ContactNumber", sql.VarChar, student.ContactNumber)
-      .input("Nationality", sql.VarChar, student.Nationality)
-      .input("IdentificationNumber", sql.VarChar, student.IdentificationNumber)
-      .input("EnrollmentNumber", sql.VarChar, student.EnrollmentNumber)
-      .input("AdmissionDate", sql.Date, student.AdmissionDate)
-      .input("ProgramName", sql.NVarChar, student.ProgramName)
-      .input("YearOrSemester", sql.VarChar, student.YearOrSemester)
-      .input("PreviousAcademicRecord", sql.NVarChar, student.PreviousAcademicRecord)
-      .input("GPAOrMarks", sql.VarChar, student.GPAOrMarks)
-      .input("AttendancePercentage", sql.Decimal, student.AttendancePercentage)
-      .input("SubjectsTaken", sql.NVarChar, student.SubjectsTaken)
-      .input("AcademicStatus", sql.VarChar, student.AcademicStatus)
-      .input("GuardianName", sql.NVarChar, student.GuardianName)
-      .input("GuardianRelation", sql.VarChar, student.GuardianRelation)
-      .input("GuardianContact", sql.VarChar, student.GuardianContact)
-      .input("GuardianOccupation", sql.VarChar, student.GuardianOccupation)
-      .input("GuardianAddress", sql.NVarChar, student.GuardianAddress)
-      .query(`
-        INSERT INTO Students (
-          FullName, EmailAddress, DOB, Gender, ClassID, SectionID,
-          Address, ContactNumber, Nationality, IdentificationNumber,
-          EnrollmentNumber, AdmissionDate, ProgramName, YearOrSemester,
-          PreviousAcademicRecord, GPAOrMarks, AttendancePercentage,
-          SubjectsTaken, AcademicStatus, GuardianName, GuardianRelation,
-          GuardianContact, GuardianOccupation, GuardianAddress
-        )
-        VALUES (
-          @FullName, @EmailAddress, @DOB, @Gender, @ClassID,
-          @SectionID, @Address, @ContactNumber, @Nationality,
-          @IdentificationNumber, @EnrollmentNumber, @AdmissionDate,
-          @ProgramName, @YearOrSemester, @PreviousAcademicRecord,
-          @GPAOrMarks, @AttendancePercentage, @SubjectsTaken,
-          @AcademicStatus, @GuardianName, @GuardianRelation,
-          @GuardianContact, @GuardianOccupation, @GuardianAddress
-        )
-      `);
-  },
+ async create(student) {
+  const pool = await poolPromise;
+
+  await pool.request()
+    .input("StudentID", sql.Int, student.StudentID || null)
+    .input("FullName", sql.NVarChar, student.FullName)
+    .input("EmailAddress", sql.VarChar, student.EmailAddress)
+    .input("DOB", sql.Date, student.DOB)
+    .input("Gender", sql.NVarChar, student.Gender)
+    .input("ClassID", sql.VarChar, student.ClassID)
+    .input("SectionID", sql.VarChar, student.SectionID)
+    .input("Address", sql.VarChar, student.Address)
+    .input("ContactNumber", sql.VarChar, student.ContactNumber)
+    .input("Nationality", sql.VarChar, student.Nationality)
+    .input("IdentificationNumber", sql.VarChar, student.IdentificationNumber)
+    .input("EnrollmentNumber", sql.VarChar, student.EnrollmentNumber)
+    .input("AdmissionDate", sql.Date, student.AdmissionDate)
+    .input("ProgramName", sql.NVarChar, student.ProgramName)
+    .input("YearOrSemester", sql.VarChar, student.YearOrSemester)
+    .input("PreviousAcademicRecord", sql.NVarChar, student.PreviousAcademicRecord)
+    .input("GPAOrMarks", sql.VarChar, student.GPAOrMarks)
+    .input("AttendancePercentage", sql.Decimal(5, 2), student.AttendancePercentage)
+    .input("SubjectsTaken", sql.NVarChar, student.SubjectsTaken)
+    .input("AcademicStatus", sql.VarChar, student.AcademicStatus)
+    .input("GuardianName", sql.NVarChar, student.GuardianName)
+    .input("GuardianRelation", sql.NVarChar, student.GuardianRelation)
+    .input("GuardianContact", sql.VarChar, student.GuardianContact)
+    .input("GuardianOccupation", sql.NVarChar, student.GuardianOccupation)
+    .input("GuardianAddress", sql.NVarChar, student.GuardianAddress)
+    .execute("dbo.UpsertStudent");
+}
+,
 
   async updateById(id, student) {
   const pool = await poolPromise;

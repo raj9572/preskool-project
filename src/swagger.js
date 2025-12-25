@@ -1,48 +1,27 @@
-import swaggerAutogen from 'swagger-autogen';
-const port = process.env.PORT || 3000
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express";
 
-const doc = {
-     openapi: "3.0.0",
-  info: {
-    title: "REST API",
-    version: "1.0.0",
-  },
-
-   servers: [
-    {
-      url: `http://localhost:${port}/api`, // This makes /api the base path
+const options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Student Management API",
+      version: "1.0.0",
     },
-  ],
-   components: {
-    securitySchemes: {
-      bearerAuth: {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'JWT'
-      }
-    }
+    servers: [
+      {
+        url: "http://localhost:3000/api",
+      },
+    ],
   },
-  security: [
-    {
-      bearerAuth: []
-    }
+  apis: [
+    "./src/routes/*.js",
+    "./src/swagger/*.js",
   ],
-   tags: [
-    { name: "Auth", description: "Authentication routes" },
-    // { name: "Product", description: "Product routes" },
-  ],
-
-   host: undefined,
-  basePath: undefined,
-  schemes: undefined,
 };
 
+const swaggerSpec = swaggerJSDoc(options);
 
-// Output file (used by Swagger UI)
-const outputFile = "./src/swagger-output.json";
-
-// Files where your routes exist
-const routes = ["./src/server.js"]; // <-- swagger-autogen will scan all routes here
-
-
-swaggerAutogen({ openapi: "3.0.0" })(outputFile, routes);
+export const swaggerDocs = (app) => {
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+};
