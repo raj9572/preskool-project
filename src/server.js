@@ -5,6 +5,8 @@ import studentRoutes from "./routes/studentAuth.routes.js";
 import staffRoutes from "./routes/staff.routes.js";
 import teacherRoutes from "./routes/teacher.routes.js";
 import userAuthRoutes from "./routes/userAuth.routes.js";
+import noticeRoutes from "./routes/notice.routes.js";
+import eventRoutes from "./routes/event.routes.js";
 import swaggerUi from "swagger-ui-express"
 import { readFileSync } from "fs";
 // import swaggerDocument  from "./swagger-output.json" assert { type: 'json' };
@@ -23,6 +25,8 @@ app.use(express.json());
 app.use("/api/student", studentRoutes);
 app.use("/api/user", userAuthRoutes);
 app.use("/api/staff", staffRoutes);
+app.use("/api", noticeRoutes);
+app.use("/api", eventRoutes);
 app.use("/api/teacher", teacherRoutes);
 
 
