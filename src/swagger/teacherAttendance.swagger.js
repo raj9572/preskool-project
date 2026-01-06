@@ -5,24 +5,26 @@
  *     description: Daily teacher attendance
  *   - name: TeacherAttendanceMatrix
  *     description: Teacher attendance matrix (session-wise)
+ *   - name: TeacherAttendanceWrite
+ *     description: Write / update teacher attendance
  */
 
 /**
  * @swagger
  * components:
  *   schemas:
- *     TeacherTodayAttendance:
+ *     TeacherAttendanceMark:
  *       type: object
+ *       required:
+ *         - teacherID
+ *         - status
  *       properties:
- *         TeacherID:
+ *         teacherID:
  *           type: integer
- *           example: 201
- *         Name:
+ *           example: 12
+ *         status:
  *           type: string
- *           example: Nadeem Shahzad
- *         Status:
- *           type: string
- *           enum: [P, A, H]
+ *           enum: [P, A]
  *           example: P
  *
  *     TeacherAttendanceMatrixResponse:
@@ -37,9 +39,9 @@
  *             type: object
  */
 
-/* ================================
-   TEACHER TODAY ATTENDANCE
-   ================================ */
+/* =========================
+   TODAY ATTENDANCE (READ)
+   ========================= */
 
 /**
  * @swagger
@@ -49,28 +51,38 @@
  *     tags: [TeacherAttendance]
  *     responses:
  *       200:
- *         description: List of teachers with today’s attendance status
+ *         description: Teacher attendance for today
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/TeacherTodayAttendance'
+ *                 type: object
+ *                 properties:
+ *                   TeacherID:
+ *                     type: integer
+ *                     example: 12
+ *                   Name:
+ *                     type: string
+ *                     example: Ramesh Kumar
+ *                   Status:
+ *                     type: string
+ *                     example: P
  */
 
-/* ================================
-   TEACHER ATTENDANCE MATRIX
-   ================================ */
+/* =========================
+   ATTENDANCE MATRIX
+   ========================= */
 
 /**
  * @swagger
  * /v1/teacher-attendance/all:
  *   get:
- *     summary: Get attendance matrix for all teachers
+ *     summary: Get teacher attendance matrix for all teachers
  *     tags: [TeacherAttendanceMatrix]
  *     responses:
  *       200:
- *         description: Attendance matrix for all teachers
+ *         description: Attendance matrix
  *         content:
  *           application/json:
  *             schema:
@@ -89,12 +101,58 @@
  *         required: true
  *         schema:
  *           type: integer
- *           example: 201
+ *           example: 12
  *     responses:
  *       200:
- *         description: Attendance matrix for the teacher
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/TeacherAttendanceMatrixResponse'
+ *         description: Attendance matrix for teacher
+ */
+
+/* =========================
+   WRITE ATTENDANCE
+   ========================= */
+
+/**
+ * @swagger
+ * /writeteacherattendance/today:
+ *   post:
+ *     summary: Mark teacher attendance for today
+ *     tags: [TeacherAttendanceWrite]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               $ref: '#/components/schemas/TeacherAttendanceMark'
+ *     responses:
+ *       200:
+ *         description: Attendance saved successfully
+ */
+
+/**
+ * @swagger
+ * /writeteacherattendance/{date}:
+ *   post:
+ *     summary: Mark teacher attendance for a specific date
+ *     tags: [TeacherAttendanceWrite]
+ *     parameters:
+ *       - in: path
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *           example: 2025-09-02
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               $ref: '#/components/schemas/TeacherAttendanceMark'
+ *     responses:
+ *       200:
+ *         description: Attendance saved successfully
  */
