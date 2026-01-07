@@ -37,7 +37,7 @@
  *           example: session-start
  *         ToDate:
  *           type: string
- *           example: 2025-09-02
+ *           example: 2026-01-02
  *         Data:
  *           type: array
  *           items:

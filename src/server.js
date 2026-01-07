@@ -9,6 +9,7 @@ import noticeRoutes from "./routes/notice.routes.js";
 import eventRoutes from "./routes/event.routes.js";
 import attendanceRoutes from "./routes/attendance.routes.js";
 import teacherAttendanceRoutes from "./routes/teacherAttendance.routes.js";
+import staffAttendanceRoutes from "./routes/staffAttendance.routes.js";
 import swaggerUi from "swagger-ui-express"
 import { readFileSync } from "fs";
 // import swaggerDocument  from "./swagger-output.json" assert { type: 'json' };
@@ -32,6 +33,7 @@ app.use("/api", eventRoutes);
 app.use("/api/teacher", teacherRoutes);
 app.use("/api", attendanceRoutes);
 app.use("/api", teacherAttendanceRoutes);
+app.use("/api", staffAttendanceRoutes);
 
 
 
