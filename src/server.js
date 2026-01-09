@@ -12,11 +12,7 @@ import teacherAttendanceRoutes from "./routes/teacherAttendance.routes.js";
 import staffAttendanceRoutes from "./routes/staffAttendance.routes.js";
 import feeInventoryRoutes from "./routes/feeInventory.routes.js";
 import discountRoutes from "./routes/discount.routes.js";
-import swaggerUi from "swagger-ui-express"
-import { readFileSync } from "fs";
-// import swaggerDocument  from "./swagger-output.json" assert { type: 'json' };
-// import { connectDB } from "./config/db.js";
-import { poolPromise } from "./config/db.js";
+import feeStructureRoutes from "./routes/feeStructure.routes.js";
 import { swaggerDocs } from "./swagger.js";
 
 dotenv.config();
@@ -38,48 +34,10 @@ app.use("/api", teacherAttendanceRoutes);
 app.use("/api", staffAttendanceRoutes);
 app.use("/api", feeInventoryRoutes);
 app.use("/api", discountRoutes);
-
-
-
-
-// app.use("/api/auth", authRouter);
-app.get("/test-db", async (req, res) => {
-  try {
-    const pool = await poolPromise;
-    const result = await pool.request().query("SELECT GETDATE() AS time");
-    res.json({
-      success: true,
-      serverTime: result.recordset[0].time
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
+app.use("/api", feeStructureRoutes);
 
 // Swagger
 swaggerDocs(app);
-
-// const swaggerDocument = JSON.parse(
-//   readFileSync(new URL("./swagger-output.json", import.meta.url), "utf-8")
-// );
-
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-
-// connectDB()
-// .then(()=>{
-//     app.on("error",(error)=>{
-//         console.log("server Error",error)
-        
-//     })
-//     app.listen(process.env.PORT || 3000,()=>{
-//         console.log(`server is listning on port ${process.env.PORT}`)
-//     })
-// })
-// .catch((err)=>{
-//     console.log('MONGODB Connection FAILED:',err)
-// })
 
 const PORT = 3000;
 app.listen(PORT, () => {
