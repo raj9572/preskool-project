@@ -11,6 +11,7 @@ import attendanceRoutes from "./routes/attendance.routes.js";
 import teacherAttendanceRoutes from "./routes/teacherAttendance.routes.js";
 import staffAttendanceRoutes from "./routes/staffAttendance.routes.js";
 import feeInventoryRoutes from "./routes/feeInventory.routes.js";
+import discountRoutes from "./routes/discount.routes.js";
 import swaggerUi from "swagger-ui-express"
 import { readFileSync } from "fs";
 // import swaggerDocument  from "./swagger-output.json" assert { type: 'json' };
@@ -36,7 +37,7 @@ app.use("/api", attendanceRoutes);
 app.use("/api", teacherAttendanceRoutes);
 app.use("/api", staffAttendanceRoutes);
 app.use("/api", feeInventoryRoutes);
-
+app.use("/api", discountRoutes);
 
 
 
