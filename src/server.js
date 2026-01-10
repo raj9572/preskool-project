@@ -13,6 +13,7 @@ import staffAttendanceRoutes from "./routes/staffAttendance.routes.js";
 import feeInventoryRoutes from "./routes/feeInventory.routes.js";
 import discountRoutes from "./routes/discount.routes.js";
 import feeStructureRoutes from "./routes/feeStructure.routes.js";
+import feeSubmissionRoutes from "./routes/feeSubmission.routes.js";
 import { swaggerDocs } from "./swagger.js";
 
 dotenv.config();
@@ -35,6 +36,7 @@ app.use("/api", staffAttendanceRoutes);
 app.use("/api", feeInventoryRoutes);
 app.use("/api", discountRoutes);
 app.use("/api", feeStructureRoutes);
+app.use("/api", feeSubmissionRoutes);
 
 // Swagger
 swaggerDocs(app);
