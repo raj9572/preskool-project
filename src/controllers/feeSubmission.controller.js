@@ -16,19 +16,17 @@ export const FeeSubmissionController = {
     }
   },
 
-  // GET /api/fee-submission
+  
   async getAll(req, res) {
     const data = await FeeSubmissionModel.getAll();
-    console.log(data)
     res.status(200).json({result:true, data});
   },
 
-  // GET /api/fee-submission/student/:studentId
+ 
   async getByStudent(req, res) {
     res.json(await FeeSubmissionModel.getByStudent(req.params.studentId));
   },
 
-  // GET /api/fee-submission/transaction/:transactionId
   async getByTransaction(req, res) {
     const data = await FeeSubmissionModel.getByTransaction(req.params.transactionId);
     if (!data) {
@@ -37,7 +35,7 @@ export const FeeSubmissionController = {
     res.json(data);
   },
 
-  // DELETE /api/fee-submission/:id
+ 
   async delete(req, res) {
     await FeeSubmissionModel.delete(req.params.id);
     res.json({ message: "Fee submission deleted" });
