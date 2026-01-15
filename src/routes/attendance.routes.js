@@ -4,7 +4,12 @@ import { StudentAttendanceMatrixController } from "../controllers/studentAttenda
 import { AttendanceWriterController } from "../controllers/attendanceWriter.controller.js";
 import { AttendanceCountController } from "../controllers/attendanceCount.controller.js";
 
+import { protect } from "../middlewares/auth.middleware.js";
+
 const router = express.Router();
+
+
+router.use(protect);
 
 // Read attendance
 router.get("/getstudentattendance", StudentAttendanceController.get);

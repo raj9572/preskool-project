@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { UserModel } from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 
 // ✅ REGISTER USER
@@ -17,6 +18,8 @@ export const registerUser = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(Password, 10);
+
+
 
     await UserModel.create({
       Username,
@@ -44,9 +47,10 @@ export const loginUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // if (!user.isActive) {
-    //   return res.status(403).json({ message: "User account is disabled" });
-    // }
+
+    if (!user.IsActive) {
+      return res.status(403).json({ message: "User account is disabled" });
+    }
 
     // const isMatch = await bcrypt.compare(Password, user.Password);
     // if (!isMatch) {
@@ -54,8 +58,22 @@ export const loginUser = async (req, res) => {
     // }
 
 
+     
+    const token = jwt.sign(
+      {
+        userId: user.UserID || user.StudentID || user.TeacherID || user.StaffID,
+        username: user.Username,
+        role: user.Role
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: process.env.JWT_EXPIRES_IN || "7d" }
+    );
+
+
     res.json({
+      success: true,
       message: "Login successful",
+      token,
       user: {
         UserID: user.UserID,
         Username: user.Username,

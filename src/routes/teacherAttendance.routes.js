@@ -2,8 +2,13 @@ import express from "express";
 import { TeacherAttendanceController } from "../controllers/teacherAttendance.controller.js";
 import { TeacherAttendanceMatrixController } from "../controllers/teacherAttendanceMatrix.controller.js";
 import { WriteTeacherAttendanceController } from "../controllers/writeTeacherAttendance.controller.js";
+import { protect } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
+
+
+router.use(protect);
+
 
 // Read today
 router.get("/getteacherattendance/today", TeacherAttendanceController.getToday);
