@@ -52,10 +52,10 @@ export const loginUser = async (req, res) => {
       return res.status(403).json({ message: "User account is disabled" });
     }
 
-    // const isMatch = await bcrypt.compare(Password, user.Password);
-    // if (!isMatch) {
-    //   return res.status(401).json({ message: "Invalid credentials" });
-    // }
+    const isMatch = await bcrypt.compare(Password, user.Password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
 
      
