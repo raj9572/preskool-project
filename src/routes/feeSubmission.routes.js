@@ -1,7 +1,12 @@
 import express from "express";
 import { FeeSubmissionController } from "../controllers/feeSubmission.controller.js";
 
+import { protect } from "../middlewares/auth.middleware.js";
+
 const router = express.Router();
+
+
+router.use(protect);
 
 router.post("/fee-submission", FeeSubmissionController.create);
 router.get("/fee-submission", FeeSubmissionController.getAll);

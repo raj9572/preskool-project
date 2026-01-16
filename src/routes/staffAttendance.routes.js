@@ -2,7 +2,12 @@ import express from "express";
 import { StaffAttendanceMatrixController } from "../controllers/staffAttendanceMatrix.controller.js";
 import { WriteStaffAttendanceController } from "../controllers/writeStaffAttendance.controller.js";
 
+import { protect } from "../middlewares/auth.middleware.js";
+
 const router = express.Router();
+
+
+router.use(protect);
 
 // Matrix
 router.get("/v1/staff-attendance/all", StaffAttendanceMatrixController.getAll);

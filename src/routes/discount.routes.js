@@ -1,7 +1,12 @@
 import express from "express";
 import { DiscountController } from "../controllers/discount.controller.js";
 
+import { protect } from "../middlewares/auth.middleware.js";
+
 const router = express.Router();
+
+
+router.use(protect);
 
 router.post("/discount", DiscountController.create);
 router.get("/discount", DiscountController.getAll);

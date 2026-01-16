@@ -61,7 +61,7 @@ export const loginUser = async (req, res) => {
      
     const token = jwt.sign(
       {
-        userId: user.UserID || user.StudentID || user.TeacherID || user.StaffID,
+        userId: user.UserID,
         username: user.Username,
         role: user.Role
       },
