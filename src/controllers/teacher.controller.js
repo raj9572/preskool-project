@@ -21,44 +21,21 @@ export const TeacherController = {
     }
   },
 
-  async create(req, res) {
-    try {
-      const dto = req.body;
-
-      if (!dto.fullName) {
-        return res.status(400).json({ success: false, message: "fullName is required" });
+  async createOrUpdate(req, res) {
+      try {
+        await TeacherModel.upsert(req.body);
+        res.json({
+          success: true,
+          message: "teacher saved/updated successfully"
+        });
+      } catch (error) {
+        res.status(500).json({
+          success: false,
+          message: error.message
+        });
       }
-
-      const result = await TeacherModel.upsert(dto);
-
-      res.status(201).json({
-        success: true,
-        message: "Teacher saved successfully",
-        result
-      });
-
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
-  },
-
-  async update(req, res) {
-    try {
-      const dto = req.body;
-      dto.teacherId = parseInt(req.params.id);
-
-      const result = await TeacherModel.upsert(dto);
-
-      res.json({
-        success: true,
-        message: "Teacher updated successfully",
-        result
-      });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
-  },
-
+    },
+  
   async delete(req, res) {
     try {
       const ok = await TeacherModel.delete(req.params.id);
@@ -70,3 +47,45 @@ export const TeacherController = {
     }
   }
 };
+
+
+
+
+
+// async create(req, res) {
+//     try {
+//       const dto = req.body;
+
+//       if (!dto.fullName) {
+//         return res.status(400).json({ success: false, message: "fullName is required" });
+//       }
+
+//       const result = await TeacherModel.upsert(dto);
+
+//       res.status(201).json({
+//         success: true,
+//         message: "Teacher saved successfully",
+//         result
+//       });
+
+//     } catch (err) {
+//       res.status(500).json({ success: false, message: err.message });
+//     }
+//   },
+
+//   async update(req, res) {
+//     try {
+//       const dto = req.body;
+//       dto.teacherId = parseInt(req.params.id);
+
+//       const result = await TeacherModel.upsert(dto);
+
+//       res.json({
+//         success: true,
+//         message: "Teacher updated successfully",
+//         result
+//       });
+//     } catch (err) {
+//       res.status(500).json({ success: false, message: err.message });
+//     }
+//   },
