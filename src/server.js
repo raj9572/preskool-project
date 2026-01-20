@@ -15,6 +15,7 @@ import discountRoutes from "./routes/discount.routes.js";
 import feeStructureRoutes from "./routes/feeStructure.routes.js";
 import feeSubmissionRoutes from "./routes/feeSubmission.routes.js";
 import studentExamResultRoutes from "./routes/studentExamResult.routes.js";
+import salaryRoutes from "./routes/salary.routes.js";
 
 import { swaggerDocs } from "./swagger.js";
 
@@ -40,6 +41,7 @@ app.use("/api", discountRoutes);
 app.use("/api", feeStructureRoutes);
 app.use("/api", feeSubmissionRoutes);
 app.use("/api", studentExamResultRoutes);
+app.use("/api", salaryRoutes);
 
 
 // Swagger
