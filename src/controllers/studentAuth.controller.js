@@ -1,62 +1,81 @@
 import { StudentModel } from "../models/student.model.js";
 
-export const StudentController = {
+export const studentController = {
 
-  // GET ALL STUDENTS
+  
   async getAll(req, res) {
     try {
-      const students = await StudentModel.getAll();
-      res.json({ success: true, data: students });
+      const data = await StudentModel.getAll();
+      res.json({ success: true, data });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
   },
 
-  // GET STUDENT BY ID
+  
   async getById(req, res) {
     try {
-      const student = await StudentModel.findById(req.params.id);
-      if (!student) {
-        return res.status(404).json({ message: "Student not found" });
+      const data = await StudentModel.getById(req.params.id);
+      if (!data) {
+        return res.status(404).json({ success: false, message: "Student not found" });
       }
-      res.json({ success: true, data: student });
+      res.json({ success: true, data });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
   },
 
-  // CREATE OR UPDATE (SAME ENDPOINT)
-  async createAndUpdateStudent(req, res) {
+ 
+  async create(req, res) {
     try {
-      const {studentID} = req.body;
+      const dto = req.body;
 
-      
-
-      if (studentID) {
-        const student = await StudentModel.findById(studentID);
-        if (!student) {
-          return res.status(404).json({ success: false, message: "Student not found" });
-        }
-        await StudentModel.updateById(studentID, req.body);
-        return res.json({ success: true, message: "Student updated successfully" });
+      if (!dto.fullName) {
+        return res.status(400).json({ success: false, message: "fullName is required" });
       }
 
-      await StudentModel.create(req.body);
-      res.status(201).json({ success: true, message: "Student created successfully" });
+      const result = await StudentModel.upsert(dto);
 
+      res.status(201).json({
+        success: true,
+        message: "Student saved successfully",
+        result
+      });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
   },
 
-  // DELETE STUDENT
+  
+  async update(req, res) {
+    try {
+      const dto = req.body;
+      dto.studentId = parseInt(req.params.id);
+
+      const result = await StudentModel.upsert(dto);
+
+      res.json({
+        success: true,
+        message: "Student updated successfully",
+        result
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
+ 
   async delete(req, res) {
     try {
-      await StudentModel.deleteById(req.params.id);
+      const ok = await StudentModel.delete(req.params.id);
+
+      if (!ok) {
+        return res.status(404).json({ success: false, message: "Student not found" });
+      }
+
       res.json({ success: true, message: "Student deleted successfully" });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
   }
-
 };

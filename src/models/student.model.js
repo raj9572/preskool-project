@@ -1,169 +1,62 @@
-// import { poolPromise, sql } from "../config/db.js";
-
-// export const StudentModel = {
-
-//   async findByEmail(email) {
-//     const pool = await poolPromise;
-//     const result = await pool.request()
-//       .input("EmailAddress", sql.VarChar, email)
-//       .query(`
-//         SELECT * FROM Students
-//         WHERE EmailAddress = @EmailAddress
-//       `);
-//     return result.recordset[0];
-//   },
-
-//   async create(student) {
-//     const pool = await poolPromise;
-//     await pool.request()
-//       .input("FullName", sql.NVarChar, student.FullName)
-//       .input("DOB", sql.Date, student.DOB)
-//       .input("Gender", sql.NVarChar, student.Gender)
-//       .input("ClassID", sql.VarChar, student.ClassID)
-//       .input("SectionID", sql.VarChar, student.SectionID)
-//       .input("Address", sql.VarChar, student.Address)
-//       .input("ContactNumber", sql.VarChar, student.ContactNumber)
-//       .input("EmailAddress", sql.VarChar, student.EmailAddress)
-//       .input("Password", sql.VarChar, student.Password)
-//       .input("Nationality", sql.VarChar, student.Nationality)
-//       .input("IdentificationNumber", sql.VarChar, student.IdentificationNumber)
-//       .input("EnrollmentNumber", sql.VarChar, student.EnrollmentNumber)
-//       .input("AddmissionDate", sql.Date, student.AddmissionDate)
-//       .input("ProgramName", sql.NVarChar, student.ProgramName)
-//       .input("YearOrSamester", sql.VarChar, student.YearOrSamester)
-//       .input("PreviousAcedemicRecord", sql.NVarChar, student.PreviousAcedemicRecord)
-//       .input("GPAOrMarks", sql.VarChar, student.GPAOrMarks)
-//       .input("AttendancePercentage", sql.Decimal, student.AttendancePercentage)
-//       .input("SubjectsTaken", sql.NVarChar, student.SubjectsTaken)
-//       .input("AcademicStatus", sql.VarChar, student.AcademicStatus)
-//       .input("GuardianName", sql.NVarChar, student.GuardianName)
-//       .input("GuardianRelation", sql.VarChar, student.GuardianRelation)
-//       .input("GuardianContact", sql.VarChar, student.GuardianContact)
-//       .input("GuardianOccupation", sql.VarChar, student.GuardianOccupation)
-//       .input("GuardianAddress", sql.NVarChar, student.GuardianAddress)
-//       .query(`
-//         INSERT INTO Students
-//         (FullName, EmailAddress, Password, DOB, Gender, ClassID, SectionID, Address, ContactNumber, Nationality, IdentificationNumber, EnrollmentNumber, AddmissionDate, ProgramName, YearOrSamester, PreviousAcedemicRecord, GPAOrMarks, AttendancePercentage, SubjectsTaken, AcademicStatus, GuardianName, GuardianRelation, GuardianContact, GuardianOccupation, GuardianAddress)
-//         VALUES
-//         (@FullName, @EmailAddress, @Password, @DOB, @Gender, @ClassID, @SectionID, @Address, @ContactNumber, @Nationality, @IdentificationNumber, @EnrollmentNumber, @AddmissionDate, @ProgramName, @YearOrSamester, @PreviousAcedemicRecord, @GPAOrMarks, @AttendancePercentage, @SubjectsTaken, @AcademicStatus, @GuardianName, @GuardianRelation, @GuardianContact, @GuardianOccupation, @GuardianAddress)
-//       `);
-//   }
-
-// };
-
-
 import { poolPromise, sql } from "../config/db.js";
 
 export const StudentModel = {
 
   async getAll() {
     const pool = await poolPromise;
-    const result = await pool.request().query(`SELECT * FROM Students`);
+    const result = await pool.request()
+      .query(`SELECT * FROM dbo.Students ORDER BY StudentID DESC`);
     return result.recordset;
   },
 
-  async findById(id) {
+  async getById(studentId) {
     const pool = await poolPromise;
     const result = await pool.request()
-      .input("StudentID", sql.Int, id)
-      .query(`SELECT * FROM Students WHERE StudentID = @StudentID`);
+      .input("StudentID", sql.Int, studentId)
+      .query(`SELECT * FROM dbo.Students WHERE StudentID = @StudentID`);
     return result.recordset[0];
   },
 
- async create(student) {
-  const pool = await poolPromise;
-
-  await pool.request()
-    .input("StudentID", sql.Int, student.StudentID || null)
-    .input("FullName", sql.NVarChar, student.FullName)
-    .input("EmailAddress", sql.VarChar, student.EmailAddress)
-    .input("DOB", sql.Date, student.DOB)
-    .input("Gender", sql.NVarChar, student.Gender)
-    .input("ClassID", sql.VarChar, student.ClassID)
-    .input("SectionID", sql.VarChar, student.SectionID)
-    .input("Address", sql.VarChar, student.Address)
-    .input("ContactNumber", sql.VarChar, student.ContactNumber)
-    .input("Nationality", sql.VarChar, student.Nationality)
-    .input("IdentificationNumber", sql.VarChar, student.IdentificationNumber)
-    .input("EnrollmentNumber", sql.VarChar, student.EnrollmentNumber)
-    .input("AdmissionDate", sql.Date, student.AdmissionDate)
-    .input("ProgramName", sql.NVarChar, student.ProgramName)
-    .input("YearOrSemester", sql.VarChar, student.YearOrSemester)
-    .input("PreviousAcademicRecord", sql.NVarChar, student.PreviousAcademicRecord)
-    .input("GPAOrMarks", sql.VarChar, student.GPAOrMarks)
-    .input("AttendancePercentage", sql.Decimal(5, 2), student.AttendancePercentage)
-    .input("SubjectsTaken", sql.NVarChar, student.SubjectsTaken)
-    .input("AcademicStatus", sql.VarChar, student.AcademicStatus)
-    .input("GuardianName", sql.NVarChar, student.GuardianName)
-    .input("GuardianRelation", sql.NVarChar, student.GuardianRelation)
-    .input("GuardianContact", sql.VarChar, student.GuardianContact)
-    .input("GuardianOccupation", sql.NVarChar, student.GuardianOccupation)
-    .input("GuardianAddress", sql.NVarChar, student.GuardianAddress)
-    .execute("dbo.UpsertStudent");
-}
-,
-
-  async updateById(id, student) {
-  const pool = await poolPromise;
-  const request = pool.request();
-
-  request.input("StudentID", sql.Int, id);
-
-  const fields = [];
-
-  const addField = (key, type) => {
-    if (student[key] !== undefined) {
-      fields.push(`${key} = @${key}`);
-      request.input(key, type, student[key]);
-    }
-  };
-
-  addField("FullName", sql.NVarChar);
-  addField("EmailAddress", sql.VarChar);
-  addField("DOB", sql.Date);
-  addField("Gender", sql.NVarChar);
-  addField("ClassID", sql.VarChar);
-  addField("SectionID", sql.VarChar);
-  addField("Address", sql.VarChar);
-  addField("ContactNumber", sql.VarChar);
-  addField("Nationality", sql.VarChar);
-  addField("IdentificationNumber", sql.VarChar);
-  addField("EnrollmentNumber", sql.VarChar);
-  addField("AdmissionDate", sql.Date);
-  addField("ProgramName", sql.NVarChar);
-  addField("YearOrSemester", sql.VarChar);
-  addField("PreviousAcademicRecord", sql.NVarChar);
-  addField("GPAOrMarks", sql.VarChar);
-  addField("AttendancePercentage", sql.Decimal(5, 2));
-  addField("SubjectsTaken", sql.NVarChar);
-  addField("AcademicStatus", sql.VarChar);
-  addField("GuardianName", sql.NVarChar);
-  addField("GuardianRelation", sql.VarChar);
-  addField("GuardianContact", sql.VarChar);
-  addField("GuardianOccupation", sql.VarChar);
-  addField("GuardianAddress", sql.NVarChar);
-
-  if (!fields.length) {
-    throw new Error("No fields provided to update");
-  }
-
-  const query = `
-    UPDATE Students
-    SET ${fields.join(", ")}
-    WHERE StudentID = @StudentID
-  `;
-
-  await request.query(query);
-}
-,
-
-
-
-  async deleteById(id) {
+  async upsert(student) {
     const pool = await poolPromise;
-    await pool.request()
-      .input("StudentID", sql.Int, id)
-      .query(`DELETE FROM Students WHERE StudentID = @StudentID`);
-  }
+    const req = pool.request();
 
+    req.input("StudentID", sql.Int, student.studentId || 0);
+    req.input("PhotoUrl", sql.NVarChar(300), student.photo || null);
+    req.input("Status", sql.NVarChar(30), student.status || null);
+    req.input("RollNo", sql.NVarChar(20), student.rollNo || null);
+    req.input("AdmissionNo", sql.NVarChar(50), student.admissionNo || null);
+    req.input("JoiningDate", sql.Date, student.joiningDate || null);
+    req.input("Program", sql.NVarChar(100), student.program || null);
+    req.input("YearSemester", sql.NVarChar(50), student.yearSemester || null);
+    req.input("PreviousRecord", sql.NVarChar(200), student.previousRecord || null);
+    req.input("GPA", sql.NVarChar(20), student.gpa || null);
+    req.input("Attendance", sql.NVarChar(20), student.attendance || null);
+    req.input("Subjects", sql.NVarChar(200), student.subjects || null);
+    req.input("FullName", sql.NVarChar(200), student.fullName || null);
+    req.input("DOB", sql.Date, student.dob || null);
+    req.input("Gender", sql.NVarChar(10), student.gender || null);
+    req.input("ClassID", sql.VarChar(10), student.class || null);
+    req.input("SectionID", sql.VarChar(10), student.section || null);
+    req.input("Address", sql.NVarChar(500), student.address || null);
+    req.input("ContactNumber", sql.NVarChar(50), student.contact || null);
+    req.input("EmailAddress", sql.NVarChar(200), student.email || null);
+    req.input("Nationality", sql.NVarChar(100), student.nationality || null);
+    req.input("GuardianName", sql.NVarChar(200), student.guardianName || null);
+    req.input("GuardianRelation", sql.NVarChar(100), student.guardianRelation || null);
+    req.input("GuardianContact", sql.NVarChar(50), student.guardianContact || null);
+    req.input("GuardianOccupation", sql.NVarChar(100), student.guardianOccupation || null);
+    req.input("GuardianAddress", sql.NVarChar(500), student.guardianAddress || null);
+    const result = await req.execute("dbo.UpsertStudent");
+    return result.recordset?.[0]; 
+  },
+
+  async delete(studentId) {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("StudentID", sql.Int, studentId)
+      .query(`DELETE FROM dbo.Students WHERE StudentID=@StudentID`);
+
+    return result.rowsAffected[0] > 0;
+  }
 };
