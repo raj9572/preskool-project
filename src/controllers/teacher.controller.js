@@ -2,54 +2,71 @@ import { TeacherModel } from "../models/teacher.model.js";
 
 export const TeacherController = {
 
-  async createOrUpdate(req, res) {
-    try {
-      await TeacherModel.upsert(req.body);
-      res.json({
-        success: true,
-        message: "Teacher created/updated successfully"
-      });
-    } catch (error) {
-      res.status(500).json({
-        success: false,
-        message: error.message
-      });
-    }
-  },
-
   async getAll(req, res) {
     try {
-      const teachers = await TeacherModel.getAll();
-      res.json({ success: true, data: teachers });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      const data = await TeacherModel.getAll();
+      res.json({ success: true, data });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
     }
   },
 
   async getById(req, res) {
     try {
-      const teacher = await TeacherModel.getById(req.params.id);
-      if (!teacher) {
-        return res.status(404).json({
-          success: false,
-          message: "Teacher not found"
-        });
+      const data = await TeacherModel.getById(req.params.id);
+      if (!data) return res.status(404).json({ success: false, message: "Teacher not found" });
+      res.json({ success: true, data });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
+  async create(req, res) {
+    try {
+      const dto = req.body;
+
+      if (!dto.fullName) {
+        return res.status(400).json({ success: false, message: "fullName is required" });
       }
-      res.json({ success: true, data: teacher });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+
+      const result = await TeacherModel.upsert(dto);
+
+      res.status(201).json({
+        success: true,
+        message: "Teacher saved successfully",
+        result
+      });
+
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
+  async update(req, res) {
+    try {
+      const dto = req.body;
+      dto.teacherId = parseInt(req.params.id);
+
+      const result = await TeacherModel.upsert(dto);
+
+      res.json({
+        success: true,
+        message: "Teacher updated successfully",
+        result
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
     }
   },
 
   async delete(req, res) {
     try {
-      await TeacherModel.deleteById(req.params.id);
-      res.json({
-        success: true,
-        message: "Teacher deleted successfully"
-      });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
+      const ok = await TeacherModel.delete(req.params.id);
+      if (!ok) return res.status(404).json({ success: false, message: "Teacher not found" });
+
+      res.json({ success: true, message: "Teacher deleted successfully" });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
     }
   }
 };

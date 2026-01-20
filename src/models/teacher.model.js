@@ -2,36 +2,10 @@ import { poolPromise, sql } from "../config/db.js";
 
 export const TeacherModel = {
 
-  async upsert(teacher) {
-    const pool = await poolPromise;
-
-    await pool.request()
-      .input("TeacherID", sql.Int, teacher.TeacherID || null)
-      .input("FullName", sql.NVarChar, teacher.FullName)
-      .input("Subject", sql.NVarChar, teacher.Subject)
-      .input("Email", sql.VarChar, teacher.Email)
-      .input("ContactNumber", sql.VarChar, teacher.ContactNumber)
-      .input("Gender", sql.NVarChar, teacher.Gender)
-      .input("DateOfBirth", sql.Date, teacher.DateOfBirth)
-      .input("Qualification", sql.NVarChar, teacher.Qualification)
-      .input("ExperienceYears", sql.Int, teacher.ExperienceYears)
-      .input("Address", sql.NVarChar, teacher.Address)
-      .input("City", sql.NVarChar, teacher.City)
-      .input("State", sql.NVarChar, teacher.State)
-      .input("PostalCode", sql.VarChar, teacher.PostalCode)
-      .input("Nationality", sql.NVarChar, teacher.Nationality)
-      .input("DateOfJoining", sql.Date, teacher.DateOfJoining)
-      .input("BloodGroup", sql.NVarChar, teacher.BloodGroup)
-      .input("EmergencyContactName", sql.NVarChar, teacher.EmergencyContactName)
-      .input("EmergencyContactNumber", sql.VarChar, teacher.EmergencyContactNumber)
-      .input("MaritalStatus", sql.NVarChar, teacher.MaritalStatus)
-      .input("ProfilePictureUrl", sql.VarChar, teacher.ProfilePictureUrl)
-      .execute("dbo.UpsertTeacher");
-  },
-
   async getAll() {
     const pool = await poolPromise;
-    const result = await pool.request().query("SELECT * FROM Teachers");
+    const result = await pool.request()
+      .query(`SELECT * FROM dbo.Teachers ORDER BY TeacherID DESC`);
     return result.recordset;
   },
 
@@ -39,14 +13,50 @@ export const TeacherModel = {
     const pool = await poolPromise;
     const result = await pool.request()
       .input("TeacherID", sql.Int, id)
-      .query("SELECT * FROM Teachers WHERE TeacherID = @TeacherID");
+      .query(`SELECT * FROM dbo.Teachers WHERE TeacherID=@TeacherID`);
     return result.recordset[0];
   },
 
-  async deleteById(id) {
+  async upsert(teacher) {
     const pool = await poolPromise;
-    await pool.request()
+    const req = pool.request();
+
+    req.input("TeacherID", sql.Int, teacher.teacherId || 0);
+    req.input("FullName", sql.NVarChar(100), teacher.fullName || null);
+    req.input("Subject", sql.NVarChar(100), teacher.subject || null);
+    req.input("Email", sql.NVarChar(100), teacher.email || null);
+    req.input("ContactNumber", sql.NVarChar(15), teacher.contactNumber || null);
+    req.input("Gender", sql.NVarChar(10), teacher.gender || null);
+    req.input("DateOfBirth", sql.Date, teacher.dateOfBirth || null);
+    req.input("Qualification", sql.NVarChar(100), teacher.qualification || null);
+    req.input("ExperienceYears", sql.Int, teacher.experienceYears || null);
+    req.input("Address", sql.NVarChar(255), teacher.address || null);
+    req.input("City", sql.NVarChar(100), teacher.city || null);
+    req.input("State", sql.NVarChar(100), teacher.state || null);
+    req.input("PostalCode", sql.NVarChar(20), teacher.postalCode || null);
+    req.input("Nationality", sql.NVarChar(50), teacher.nationality || null);
+    req.input("DateOfJoining", sql.Date, teacher.dateOfJoining || null);
+    req.input("BloodGroup", sql.NVarChar(5), teacher.bloodGroup || null);
+    req.input("EmergencyContactName", sql.NVarChar(100), teacher.emergencyContactName || null);
+    req.input("EmergencyContactNumber", sql.NVarChar(20), teacher.emergencyContactNumber || null);
+    req.input("MaritalStatus", sql.NVarChar(20), teacher.maritalStatus || null);
+    req.input("ProfilePictureUrl", sql.NVarChar(255), teacher.profilePictureUrl || null);
+    req.input("VehicleNumber", sql.NVarChar(50), teacher.vehicleNumber || null);
+    req.input("TransportNumber", sql.NVarChar(50), teacher.transportNumber || null);
+    req.input("ProfilePhoto", sql.NVarChar(300), teacher.profilePhoto || null);
+    req.input("IDProofPhoto", sql.NVarChar(300), teacher.idProofPhoto || null);
+    req.input("Salary", sql.Decimal(10, 2), teacher.salary || null);
+
+    const result = await req.execute("dbo.UpsertTeacher");
+    return result.recordset?.[0];
+  },
+
+  async delete(id) {
+    const pool = await poolPromise;
+    const result = await pool.request()
       .input("TeacherID", sql.Int, id)
-      .query("DELETE FROM Teachers WHERE TeacherID = @TeacherID");
+      .query(`DELETE FROM dbo.Teachers WHERE TeacherID=@TeacherID`);
+
+    return result.rowsAffected[0] > 0;
   }
 };
