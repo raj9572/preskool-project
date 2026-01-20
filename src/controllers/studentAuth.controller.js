@@ -26,44 +26,20 @@ export const studentController = {
   },
 
  
-  async create(req, res) {
-    try {
-      const dto = req.body;
-
-      if (!dto.fullName) {
-        return res.status(400).json({ success: false, message: "fullName is required" });
-      }
-
-      const result = await StudentModel.upsert(dto);
-
-      res.status(201).json({
-        success: true,
-        message: "Student saved successfully",
-        result
-      });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
-  },
-
-  
-  async update(req, res) {
-    try {
-      const dto = req.body;
-      dto.studentId = parseInt(req.params.id);
-
-      const result = await StudentModel.upsert(dto);
-
-      res.json({
-        success: true,
-        message: "Student updated successfully",
-        result
-      });
-    } catch (err) {
-      res.status(500).json({ success: false, message: err.message });
-    }
-  },
-
+ async createOrUpdate(req, res) {
+       try {
+         await StudentModel.upsert(req.body);
+         res.json({
+           success: true,
+           message: "Student saved/updated successfully"
+         });
+       } catch (error) {
+         res.status(500).json({
+           success: false,
+           message: error.message
+         });
+       }
+     },
  
   async delete(req, res) {
     try {

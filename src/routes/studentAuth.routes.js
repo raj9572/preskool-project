@@ -10,8 +10,7 @@ router.use(protect);
 router.get("/students", studentController.getAll);
 router.get("/students/:id", studentController.getById);
 
-router.post("/students/upsert", studentController.create);  
-router.put("/students/:id", studentController.update);      
+router.post("/students/upsert", studentController.createOrUpdate);  
 
 router.delete("/students/:id", studentController.delete);
 
