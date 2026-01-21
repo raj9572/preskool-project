@@ -62,5 +62,14 @@ export const StudentModel = {
       .query(`DELETE FROM dbo.Students WHERE StudentID=@StudentID`);
 
     return result.rowsAffected[0] > 0;
+  },
+
+   async deleteStudentComplete(studentId) {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("StudentID", sql.Int, studentId)
+      .execute("dbo.DeleteStudentComplete");
+
+    return result.recordset?.[0];
   }
 };

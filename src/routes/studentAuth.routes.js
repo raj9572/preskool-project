@@ -12,6 +12,6 @@ router.get("/students/:id", studentController.getById);
 
 router.post("/students/upsert", studentController.createOrUpdate);  
 
-router.delete("/students/:id", studentController.delete);
+router.delete("/students/:id", studentController.deleteStudentComplete);
 
 export default router;

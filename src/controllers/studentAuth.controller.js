@@ -53,5 +53,27 @@ export const studentController = {
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
+  },
+
+  async deleteStudentComplete(req, res) {
+    try {
+      const data = await StudentModel.getById(req.params.id);
+      if (!data) {
+        return res.status(404).json({ success: false, message: "Student not found" });
+      }
+
+      const result = await StudentModel.deleteStudentComplete(data.StudentID);
+
+      res.json({
+        success: true,
+        message: "Student deleted successfully",
+        result
+      });
+    } catch (err) {
+      res.status(404).json({
+        success: false,
+        message: err.message
+      });
+    }
   }
 };

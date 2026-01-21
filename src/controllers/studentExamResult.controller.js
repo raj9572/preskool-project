@@ -2,47 +2,125 @@ import { StudentExamResultModel } from "../models/studentExamResult.model.js";
 
 export const StudentExamResultController = {
 
-  // POST /api/student-exam-result
-  async create(req, res) {
+  async getAll(req, res) {
     try {
-      const inserted = await StudentExamResultModel.create(req.body);
-      res.status(201).json({
-        message: "Exam result created successfully",
-        ResultId: inserted.ResultId
-      });
+      const data = await StudentExamResultModel.getAll();
+      res.json({ success: true, data });
     } catch (err) {
-      res.status(500).json({ message: err.message });
+      res.status(500).json({ success: false, message: err.message });
     }
   },
 
-  // GET /api/student-exam-result
-  async getAll(req, res) {
-    const data = await StudentExamResultModel.getAll();
-    res.json(data);
-  },
-
-  // GET /api/student-exam-result/:id
   async getById(req, res) {
-    const data = await StudentExamResultModel.getById(req.params.id);
-    if (!data) return res.status(404).json({ message: "Result not found" });
-    res.json(data);
+    try {
+      const data = await StudentExamResultModel.getById(req.params.id);
+      if (!data) {
+        return res.status(404).json({ success: false, message: "Result not found" });
+      }
+      res.json({ success: true, data });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
   },
 
-  // GET /api/student-exam-result/student/:studentId
-  async getByStudent(req, res) {
-    const data = await StudentExamResultModel.getByStudent(req.params.studentId);
-    res.json(data);
+  
+  async getByStudentId(req, res) {
+  try {
+    const studentId = parseInt(req.params.studentId);
+
+    if (!studentId || Number.isNaN(studentId)) {
+      return res.status(400).json({
+        success: false,
+        message: "studentId must be a valid integer"
+      });
+    }
+
+    const data = await StudentExamResultModel.getByStudentId(studentId);
+
+    res.json({
+      success: true,
+      studentId,
+      totalResults: data.length,
+      data
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+},
+
+  async create(req, res) {
+    try {
+      const dto = req.body;
+
+      const studentId = Number(dto.studentId);
+      if (!studentId || Number.isNaN(studentId)) {
+        return res.status(400).json({
+          success: false,
+          message: "studentId must be integer"
+        });
+      }
+
+      if (!dto.subject || !dto.examType) {
+        return res.status(400).json({
+          success: false,
+          message: "subject and examType are required"
+        });
+      }
+
+      const result = await StudentExamResultModel.create({
+        ...dto,
+        studentId
+      });
+
+      res.status(201).json({
+        success: true,
+        message: "Exam result created",
+        result
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
   },
 
-  // PUT /api/student-exam-result/:id
   async update(req, res) {
-    await StudentExamResultModel.update(req.params.id, req.body);
-    res.json({ message: "Exam result updated successfully" });
+    try {
+      const dto = req.body;
+      const resultId = parseInt(req.params.id);
+
+      const studentId = Number(dto.studentId);
+      if (!studentId || Number.isNaN(studentId)) {
+        return res.status(400).json({
+          success: false,
+          message: "studentId must be integer"
+        });
+      }
+
+      const updated = await StudentExamResultModel.update(resultId, {
+        ...dto,
+        studentId
+      });
+
+      if (updated.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: "Result not found" });
+      }
+
+      res.json({ success: true, message: "Exam result updated" });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
   },
 
-  // DELETE /api/student-exam-result/:id
+
   async delete(req, res) {
-    await StudentExamResultModel.delete(req.params.id);
-    res.json({ message: "Exam result deleted successfully" });
+    try {
+      const resultId = parseInt(req.params.id);
+
+      const ok = await StudentExamResultModel.delete(resultId);
+      if (!ok) return res.status(404).json({ success: false, message: "Result not found" });
+
+      res.json({ success: true, message: "Result deleted" });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
   }
 };
