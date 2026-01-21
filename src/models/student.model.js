@@ -22,6 +22,9 @@ export const StudentModel = {
     const req = pool.request();
 
     req.input("StudentID", sql.Int, student.studentId || 0);
+    req.input("FatherPhoto", sql.NVarChar(300), student.fatherPhoto || null);
+    req.input("MotherPhoto", sql.NVarChar(300), student.motherPhoto || null);
+    req.input("GuardianPhoto", sql.NVarChar(300), student.guardianPhoto || null);
     req.input("PhotoUrl", sql.NVarChar(300), student.photo || null);
     req.input("Status", sql.NVarChar(30), student.status || null);
     req.input("RollNo", sql.NVarChar(20), student.rollNo || null);
@@ -47,8 +50,9 @@ export const StudentModel = {
     req.input("GuardianContact", sql.NVarChar(50), student.guardianContact || null);
     req.input("GuardianOccupation", sql.NVarChar(100), student.guardianOccupation || null);
     req.input("GuardianAddress", sql.NVarChar(500), student.guardianAddress || null);
+
     const result = await req.execute("dbo.UpsertStudent");
-    return result.recordset?.[0]; 
+    return result.recordset?.[0];
   },
 
   async delete(studentId) {
