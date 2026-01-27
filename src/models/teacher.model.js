@@ -46,6 +46,8 @@ export const TeacherModel = {
     req.input("ProfilePhoto", sql.NVarChar(300), teacher.profilePhoto || null);
     req.input("IDProofPhoto", sql.NVarChar(300), teacher.idProofPhoto || null);
     req.input("Salary", sql.Decimal(10, 2), teacher.salary || null);
+    req.input("Class", sql.NVarChar(20), teacher.class || null);
+    req.input("Section", sql.NVarChar(10), teacher.section || null);
 
     const result = await req.execute("dbo.UpsertTeacher");
     return result.recordset?.[0];
