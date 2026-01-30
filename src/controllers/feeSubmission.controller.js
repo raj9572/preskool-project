@@ -1,43 +1,73 @@
+// import { FeeSubmissionModel } from "../models/feeSubmission.model.js";
+
+
 import { FeeSubmissionModel } from "../models/feeSubmission.model.js";
 
 export const FeeSubmissionController = {
 
-  // POST /api/fee-submission
-  async create(req, res) {
+  async getAll(req, res) {
     try {
-      await FeeSubmissionModel.create(req.body);
-      res.status(201).json({
-        message: "Fee submitted successfully"
-      });
+      const data = await FeeSubmissionModel.getAll();
+      res.json({ success: true, data });
     } catch (err) {
-      res.status(500).json({
-        message: err.message
-      });
+      res.status(500).json({ success: false, message: err.message });
     }
   },
 
-  
-  async getAll(req, res) {
-    const data = await FeeSubmissionModel.getAll();
-    res.status(200).json({result:true, data});
+  async getByStudent(req, res) {
+    try {
+      const studentId = parseInt(req.params.studentId);
+      if (!studentId)
+        return res.status(400).json({ success: false, message: "StudentID must be int" });
+
+      const data = await FeeSubmissionModel.getByStudentId(studentId);
+      res.json({ success: true, studentId, data });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
   },
 
- 
-  async getByStudent(req, res) {
-    res.json(await FeeSubmissionModel.getByStudent(req.params.studentId));
+  async create(req, res) {
+    try {
+      const studentId = Number(req.body.studentId);
+      if (!studentId)
+        return res.status(400).json({ success: false, message: "studentId is required (int)" });
+
+      const result = await FeeSubmissionModel.create({
+        ...req.body,
+        studentId
+      });
+
+      res.status(201).json({
+        success: true,
+        message: "Fee submitted successfully",
+        submissionId: result.SubmissionID
+      });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
   },
 
   async getByTransaction(req, res) {
-    const data = await FeeSubmissionModel.getByTransaction(req.params.transactionId);
-    if (!data) {
-      return res.status(404).json({ message: "Transaction not found" });
-    }
-    res.json(data);
+  const data = await FeeSubmissionModel.getByTransaction(req.params.transactionId);
+  if (!data) {
+    return res.status(404).json({ message: "Transaction not found" });
+  }
+  res.json(data);
   },
 
- 
   async delete(req, res) {
-    await FeeSubmissionModel.delete(req.params.id);
-    res.json({ message: "Fee submission deleted" });
+    try {
+      const ok = await FeeSubmissionModel.delete(parseInt(req.params.id));
+      if (!ok)
+        return res.status(404).json({ success: false, message: "Submission not found" });
+
+      res.json({ success: true, message: "Fee submission deleted" });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
   }
 };
+
+
+

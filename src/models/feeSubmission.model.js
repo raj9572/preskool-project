@@ -2,78 +2,90 @@ import { poolPromise, sql } from "../config/db.js";
 
 export const FeeSubmissionModel = {
 
-  // CREATE (Submit Fee)
+  async getAll() {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT * FROM dbo.fee_submission
+      ORDER BY SubmissionID DESC
+    `);
+    return result.recordset;
+  },
+
+  async getById(id) {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("SubmissionID", sql.Int, id)
+      .query(`
+        SELECT * FROM dbo.fee_submission
+        WHERE SubmissionID = @SubmissionID
+      `);
+    return result.recordset[0];
+  },
+
+  async getByStudentId(studentId) {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("StudentID", sql.Int, studentId)
+      .query(`
+        SELECT * FROM dbo.fee_submission
+        WHERE StudentID = @StudentID
+        ORDER BY SubmittedDate DESC
+      `);
+    return result.recordset;
+  },
+
   async create(data) {
     const pool = await poolPromise;
 
-    await pool.request()
-      .input("submission_id", sql.VarChar(500), data.submission_id)
-      .input("student_id", sql.VarChar(30), data.student_id)
-      .input("transaction_id", sql.VarChar(50), data.transaction_id)
-      .input("fee_type", sql.VarChar(50), data.fee_type)
-      .input("original_amount", sql.Decimal(10,2), data.original_amount)
-      .input("discount_id", sql.Int, data.discount_id || null)
-      .input("discount_amount", sql.Decimal(10,2), data.discount_amount || 0)
-      .input("paid_amount", sql.Decimal(10,2), data.paid_amount)
-      .input("payment_mode", sql.VarChar(20), data.payment_mode)
-      .input("payment_status", sql.VarChar(20), data.payment_status || "SUCCESS")
-      .input("submitted_by", sql.VarChar(50), data.submitted_by)
-      .input("submitted_date", sql.Date, data.submitted_date || new Date())
-      .input("remarks", sql.NVarChar(sql.MAX), data.remarks || null)
+    const result = await pool.request()
+      .input("StudentID", sql.Int, data.studentId)
+      .input("TransactionID", sql.NVarChar, data.transactionId)
+      .input("FeeType", sql.NVarChar, data.feeType)
+      .input("OriginalAmount", sql.Decimal(10,2), data.originalAmount)
+      .input("DiscountID", sql.Int, data.discountId || null)
+      .input("DiscountAmount", sql.Decimal(10,2), data.discountAmount || 0)
+      .input("PaidAmount", sql.Decimal(10,2), data.paidAmount)
+      .input("PaymentMode", sql.NVarChar, data.paymentMode)
+      .input("PaymentStatus", sql.NVarChar, data.paymentStatus || "SUCCESS")
+      .input("SubmittedBy", sql.NVarChar, data.submittedBy)
+      .input("Remarks", sql.NVarChar, data.remarks)
       .query(`
         INSERT INTO dbo.fee_submission
-        (submission_id, student_id, transaction_id, fee_type,
-         original_amount, discount_id, discount_amount, paid_amount,
-         payment_mode, payment_status, submitted_by, submitted_date, remarks)
+        (StudentID, TransactionID, FeeType, OriginalAmount,
+         DiscountID, DiscountAmount, PaidAmount,
+         PaymentMode, PaymentStatus, SubmittedBy, Remarks)
         VALUES
-        (@submission_id, @student_id, @transaction_id, @fee_type,
-         @original_amount, @discount_id, @discount_amount, @paid_amount,
-         @payment_mode, @payment_status, @submitted_by, @submitted_date, @remarks)
+        (@StudentID, @TransactionID, @FeeType, @OriginalAmount,
+         @DiscountID, @DiscountAmount, @PaidAmount,
+         @PaymentMode, @PaymentStatus, @SubmittedBy, @Remarks);
+
+        SELECT SCOPE_IDENTITY() AS SubmissionID;
       `);
+
+    return result.recordset[0];
+  },
+  async getByTransaction(transactionId) {
+  const pool = await poolPromise;
+  const result = await pool.request()
+    .input("TransactionID", sql.VarChar(50), transactionId)
+    .query(`
+      SELECT * FROM dbo.fee_submission
+      WHERE TransactionID = @TransactionID
+    `);
+  return result.recordset[0];
   },
 
-  // READ ALL
-  async getAll() {
+  async delete(id) {
     const pool = await poolPromise;
     const result = await pool.request()
-      .query(`SELECT * FROM dbo.fee_submission`);
-    //   .query(`SELECT * FROM dbo.fee_submission ORDER BY submitted_date DESC`);
-    return result.recordset;
-  },
-
-  // READ BY STUDENT
-  async getByStudent(studentId) {
-    const pool = await poolPromise;
-    const result = await pool.request()
-      .input("student_id", sql.VarChar(30), studentId)
+      .input("SubmissionID", sql.Int, id)
       .query(`
-        SELECT * FROM dbo.fee_submission
-        WHERE student_id = @student_id
-        ORDER BY submitted_date DESC
+        DELETE FROM dbo.fee_submission
+        WHERE SubmissionID = @SubmissionID
       `);
-    return result.recordset;
-  },
-
-  // READ BY TRANSACTION
-//   async getByTransaction(transactionId) {
-//     const pool = await poolPromise;
-//     const result = await pool.request()
-//       .input("transaction_id", sql.VarChar(50), transactionId)
-//       .query(`
-//         SELECT * FROM dbo.fee_submission
-//         WHERE transaction_id = @transaction_id
-//       `);
-//     return result.recordset[0];
-//   },
-
-  // DELETE (Admin only – optional)
-//   async delete(submissionId) {
-//     const pool = await poolPromise;
-//     await pool.request()
-//       .input("submission_id", sql.VarChar(500), submissionId)
-//       .query(`
-//         DELETE FROM dbo.fee_submission
-//         WHERE submission_id = @submission_id
-//       `);
-//   }
+    return result.rowsAffected[0] > 0;
+  }
 };
+
+
+

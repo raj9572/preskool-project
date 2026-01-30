@@ -8,10 +8,12 @@ const router = express.Router();
 
 router.use(protect);
 
-router.post("/fee-submission", FeeSubmissionController.create);
-router.get("/fee-submission", FeeSubmissionController.getAll);
-router.get("/fee-submission/student/:studentId", FeeSubmissionController.getByStudent);
-// router.get("/fee-submission/transaction/:transactionId", FeeSubmissionController.getByTransaction);
-// router.delete("/fee-submission/:id", FeeSubmissionController.delete);
+
+router.get("/fee-submissions", FeeSubmissionController.getAll);
+router.get("/fee-submissions/student/:studentId", FeeSubmissionController.getByStudent);
+router.post("/fee-submissions", FeeSubmissionController.create);
+router.delete("/fee-submissions/:id", FeeSubmissionController.delete);
+router.get("/fee-submissions/transaction/:transactionId", FeeSubmissionController.getByTransaction);
+
 
 export default router;
