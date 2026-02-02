@@ -1,30 +1,3 @@
-// import mongoose from "mongoose";
-
-// export const connectDB = async () => {
-//   try {
-//      const connectionInstant = await mongoose.connect(`${process.env.MONGO_URI}`);
-//       console.log(`/n Mongodb connected !! DB HOST : ${connectionInstant.connection.host}`)
-//   } catch (error) {
-//     console.log('mongodb connection error',error)
-//         process.exit(1)
-//   }
-// };
-
-
-// import sql from "mssql/msnodesqlv8.js";
-
-// const config = {
-//   server: "RAJALI1432\\SQLEXPRESS",
-//   database: "erpdb", // replace
-//   driver: "ODBC Driver 18 for SQL Server",
-//   options: {
-//     trustedConnection: true,
-//     encrypt: false,
-//     trustServerCertificate: true
-//   }
-// };
-
-
 import sql from "mssql";
 import dotenv from "dotenv";
 
@@ -33,7 +6,7 @@ dotenv.config();
 const config = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER,        // e.g. myserver.database.windows.net
+  server: process.env.DB_SERVER,        
   database: process.env.DB_NAME,
   options: {
     encrypt: true,
