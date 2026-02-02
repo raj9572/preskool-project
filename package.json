@@ -11,7 +11,7 @@
     "generateDoc": "node src/swagger.js"
   },
   "engines": {
-    "node": "18.16.0"
+    "node": "20.0.0"
   },
   "keywords": [],
   "author": "",
