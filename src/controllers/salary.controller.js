@@ -12,6 +12,41 @@ export const SalaryController = {
     }
   },
 
+
+   async getTeacherById(req, res) {
+    try {
+      const teacherId = parseInt(req.params.teacherId);
+      if (!teacherId)
+        return res.status(400).json({ success: false, message: "Invalid TeacherID" });
+
+      const data = await SalaryModel.getTeacherSalaryById(teacherId);
+      if (!data)
+        return res.status(404).json({ success: false, message: "Teacher not found" });
+
+      res.json({ success: true, data });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
+  // 🔹 Get staff salary by ID
+  async getStaffById(req, res) {
+    try {
+      const staffId = parseInt(req.params.staffId);
+      if (!staffId)
+        return res.status(400).json({ success: false, message: "Invalid StaffID" });
+
+      const data = await SalaryModel.getStaffSalaryById(staffId);
+      if (!data)
+        return res.status(404).json({ success: false, message: "Staff not found" });
+
+      res.json({ success: true, data });
+    } catch (err) {
+      res.status(500).json({ success: false, message: err.message });
+    }
+  },
+
+
   
   async updateTeacher(req, res) {
     try {

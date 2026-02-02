@@ -10,6 +10,25 @@ export const SalaryModel = {
     return result.recordset;
   },
 
+   async getTeacherSalaryById(teacherId) {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("TeacherID", sql.Int, teacherId)
+      .execute("dbo.GetTeacherSalaryById");
+
+    return result.recordset[0];
+  },
+
+
+  async getStaffSalaryById(staffId) {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input("StaffID", sql.Int, staffId)
+      .execute("dbo.GetStaffSalaryById");
+
+    return result.recordset[0];
+  },
+
   
   async updateTeacherSalary(teacherId, salary) {
     const pool = await poolPromise;

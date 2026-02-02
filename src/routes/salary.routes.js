@@ -8,7 +8,8 @@ router.use(protect);
 
 
 router.get("/salary/all", SalaryController.getAll);
-
+router.get("/salary/teacher/:teacherId", SalaryController.getTeacherById);
+router.get("/salary/staff/:staffId", SalaryController.getStaffById);
 
 router.put("/salary/teacher/:id", SalaryController.updateTeacher);
 router.put("/salary/staff/:id", SalaryController.updateStaff);
