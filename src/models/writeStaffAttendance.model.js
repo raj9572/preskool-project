@@ -1,8 +1,8 @@
 import { poolPromise, sql } from "../config/db.js";
 
 const normalizeStatus = (s) => {
-  const v = (s || "P").trim().toUpperCase();
-  return v === "A" ? "A" : "P";
+    const v = s?.trim().toUpperCase();
+    return ["A", "P", "L", "H"].includes(v) ? v : "P";
 };
 
 const colNameFor = (date) =>
