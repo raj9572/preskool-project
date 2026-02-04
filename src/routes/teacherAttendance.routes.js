@@ -12,6 +12,7 @@ router.use(protect);
 
 // Read today
 router.get("/getteacherattendance/today", TeacherAttendanceController.getToday);
+router.get("/getteacherattendance/monthly-summary", TeacherAttendanceController.getMonthlyAttendanceSummary);
 
 // Matrix
 router.get("/v1/teacher-attendance/all", TeacherAttendanceMatrixController.getAll);
