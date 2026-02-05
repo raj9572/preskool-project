@@ -53,5 +53,43 @@ export const StaffAttendanceMatrixController = {
         Message: error.message
       });
     }
+  },
+
+  // GET /api/v1/staff-attendance/summary?staffId=1&month=YYYY-MM
+    async getMonthlyStaffSummary(req, res) {
+    try {
+      const { staffId, month } = req.query;
+
+      if (!staffId || !month) {
+        return res.status(400).json({
+          success: false,
+          message: "staffId and month (YYYY-MM) are required"
+        });
+      }
+
+      const data =
+        await StaffAttendanceMatrixModel.getMonthlyStaffSummary(
+          parseInt(staffId),
+          month
+        );
+
+      res.json({
+        success: true,
+        staffId: Number(staffId),
+        month,
+        summary: data || {
+          PresentDays: 0,
+          AbsentDays: 0,
+          HalfDays: 0,
+          LeaveDays: 0
+        }
+      });
+
+    } catch (err) {
+      res.status(500).json({
+        success: false,
+        message: err.message
+      });
+    }
   }
 };

@@ -17,5 +17,16 @@ export const StaffAttendanceMatrixModel = {
       .execute("dbo.usp_GetStaffAttendanceMatrix");
 
     return result.recordset;
+  },
+
+  async getMonthlyStaffSummary(staffId, month) {
+    const pool = await poolPromise;
+
+    const result = await pool.request()
+      .input("StaffID", sql.Int, staffId)
+      .input("Month", sql.NVarChar(7), month)
+      .execute("dbo.GetStaffMonthlyAttendanceSummary");
+
+    return result.recordset[0];
   }
 };
