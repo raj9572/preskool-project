@@ -6,7 +6,7 @@ export const FeeStructureModel = {
   async create(data) {
     const pool = await poolPromise;
     await pool.request()
-      .input("structur_id", sql.VarChar(10), data.structur_id)
+      .input("structure_id", sql.VarChar(10), data.structure_id)
       .input("class", sql.VarChar(20), data.class)
       .input("academic_year", sql.VarChar(9), data.academic_year)
 
@@ -33,7 +33,7 @@ export const FeeStructureModel = {
       .input("mar_tuition_fee", sql.Decimal(10,2), data.mar_tuition_fee || 0)
       .query(`
         INSERT INTO dbo.fee_structure VALUES (
-          @structur_id,@class,@academic_year,
+          @structure_id,@class,@academic_year,
           @admission_fee,@annual_fee,@exam_fee,@library_fee,@computer_fee,
           @sports_fee,@lab_fee,@misc_fee,
           @apr_tuition_fee,@may_tuition_fee,@jun_tuition_fee,@jul_tuition_fee,
@@ -68,7 +68,7 @@ export const FeeStructureModel = {
   async update(id, data) {
     const pool = await poolPromise;
     await pool.request()
-      .input("structur_id", sql.VarChar(10), id)
+      .input("structure_id", sql.VarChar(10), id)
       .input("class", sql.VarChar(20), data.class)
       .input("academic_year", sql.VarChar(9), data.academic_year)
       .input("admission_fee", sql.Decimal(10,2), data.admission_fee || 0)
@@ -79,7 +79,7 @@ export const FeeStructureModel = {
             academic_year=@academic_year,
             admission_fee=@admission_fee,
             annual_fee=@annual_fee
-        WHERE structur_id=@structur_id
+        WHERE structure_id=@structure_id
       `);
   },
 
@@ -87,7 +87,7 @@ export const FeeStructureModel = {
   async delete(id) {
     const pool = await poolPromise;
     await pool.request()
-      .input("structur_id", sql.VarChar(10), id)
-      .query(`DELETE FROM dbo.fee_structure WHERE structur_id=@structur_id`);
+      .input("structure_id", sql.VarChar(10), id)
+      .query(`DELETE FROM dbo.fee_structure WHERE structure_id=@structure_id`);
   }
 };
