@@ -102,7 +102,7 @@ export const TeacherTimeTableModel = {
     endTime: { column: "EndTime", type: sql.VarChar(8) },
     classId: { column: "ClassID", type: sql.VarChar(10) },
     sectionId: { column: "SectionID", type: sql.VarChar(10) },
-    subjectId: { column: "SubjectID", type: sql.Int },
+    subjectId: { column: "SubjectID", type: sql.VarChar(10) },
     roomId: { column: "RoomID", type: sql.Int },
     isActive: { column: "IsActive", type: sql.Bit }
   };
