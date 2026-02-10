@@ -122,7 +122,8 @@ export const StaffAttendanceMatrixController = {
         fullName: row.FullName,
         email: row.Email,
         role: row.Role,
-        profilePhoto: row.ProfilePhoto
+        profilePhoto: row.ProfilePhoto,
+        salary: row.Salary
       },
       summary: {
         PresentDays: row.PresentDays,

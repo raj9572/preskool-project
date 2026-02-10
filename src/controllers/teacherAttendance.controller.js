@@ -73,9 +73,7 @@ export const TeacherAttendanceController = {
       });
     }
 
-    console.log('month',month)
     const data = await TeacherAttendanceModel.getAllTeachersMonthlySummary(month);
-    console.log('data',data)
     const formatted = data.map(row => ({
       teacherId: row.TeacherID,
       month,
@@ -83,7 +81,8 @@ export const TeacherAttendanceController = {
         fullName: row.FullName,
         email: row.Email,
         subject: row.Subject,
-        profilePhoto: row.ProfilePhoto
+        profilePhoto: row.ProfilePhoto,
+        salary: row.Salary
       },
       summary: {
         PresentDays: row.PresentDays,
