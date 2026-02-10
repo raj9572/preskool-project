@@ -60,6 +60,53 @@ export const TeacherAttendanceController = {
         message: error.message
       });
     }
+  },
+
+  async getAllTeachersMonthlySummary(req, res){
+  try {
+    const { month } = req.query;
+
+    if (!month) {
+      return res.status(400).json({
+        success: false,
+        message: "Month is required (YYYY-MM)"
+      });
+    }
+
+    console.log('month',month)
+    const data = await TeacherAttendanceModel.getAllTeachersMonthlySummary(month);
+    console.log('data',data)
+    const formatted = data.map(row => ({
+      teacherId: row.TeacherID,
+      month,
+      teacher: {
+        fullName: row.FullName,
+        email: row.Email,
+        subject: row.Subject,
+        profilePhoto: row.ProfilePhoto
+      },
+      summary: {
+        PresentDays: row.PresentDays,
+        AbsentDays: row.AbsentDays,
+        HalfDays: row.HalfDays,
+        LeaveDays: row.LeaveDays
+      }
+    }));
+
+    res.json({
+      success: true,
+      month,
+      totalTeachers: formatted.length,
+      data: formatted
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
+}
+
 
 };

@@ -100,5 +100,51 @@ export const StaffAttendanceMatrixController = {
         message: err.message
       });
     }
+  },
+
+  async getAllStaffMonthlySummary(req, res) {
+  try {
+    const { month } = req.query;
+
+    if (!month) {
+      return res.status(400).json({
+        success: false,
+        message: "Month is required (YYYY-MM)"
+      });
+    }
+
+    const data = await StaffAttendanceMatrixModel.getAllStaffMonthlySummary(month);
+
+    const formatted = data.map(row => ({
+      staffId: row.StaffID,
+      month,
+      staff: {
+        fullName: row.FullName,
+        email: row.Email,
+        role: row.Role,
+        profilePhoto: row.ProfilePhoto
+      },
+      summary: {
+        PresentDays: row.PresentDays,
+        AbsentDays: row.AbsentDays,
+        HalfDays: row.HalfDays,
+        LeaveDays: row.LeaveDays
+      }
+    }));
+
+    res.json({
+      success: true,
+      month,
+      totalStaff: formatted.length,
+      data: formatted
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
+}
+
 };

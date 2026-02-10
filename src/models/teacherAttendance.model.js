@@ -24,6 +24,17 @@ export const TeacherAttendanceModel = {
       .execute("dbo.GetTeacherMonthlyAttendanceSummary");
 
     return result.recordset[0]; // single row summary
-  }
+  },
+  
+  async getAllTeachersMonthlySummary(month) {
+  const pool = await poolPromise;
+
+  const result = await pool.request()
+    .input("Month", sql.VarChar(7), month)
+    .execute("dbo.GetAllTeachersMonthlyAttendanceSummary");
+
+  return result.recordset;
+}
+
 
 };

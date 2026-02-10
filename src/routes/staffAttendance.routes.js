@@ -13,6 +13,7 @@ router.use(protect);
 router.get("/v1/staff-attendance/all", StaffAttendanceMatrixController.getAll);
 router.get("/v1/staff-attendance/by-id/:staffId", StaffAttendanceMatrixController.getById);
 router.get("/v1/staff-attendance/summary", StaffAttendanceMatrixController.getMonthlyStaffSummary);
+router.get("/v1/staff-attendance/all-summary", StaffAttendanceMatrixController.getAllStaffMonthlySummary);
 
 // Write / Read daily
 router.post("/write-staff-attendence/today", WriteStaffAttendanceController.writeToday);
