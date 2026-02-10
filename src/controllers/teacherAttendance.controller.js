@@ -1,3 +1,4 @@
+import { TeacherModel } from "../models/teacher.model.js";
 import { TeacherAttendanceModel } from "../models/teacherAttendance.model.js";
 
 export const TeacherAttendanceController = {
@@ -27,6 +28,7 @@ export const TeacherAttendanceController = {
         });
       }
 
+      const teacherDetails = await TeacherModel.getById(parseInt(teacherId));
       const data =
         await TeacherAttendanceModel.getMonthlyAttendanceSummary(
           parseInt(teacherId),
@@ -36,6 +38,12 @@ export const TeacherAttendanceController = {
       return res.json({
         success: true,
         teacherId: Number(teacherId),
+        teacherDetails:{
+          fullName: teacherDetails?.FullName || "N/A",
+          email: teacherDetails?.Email || "N/A",
+          profilePictureUrl: teacherDetails?.ProfilePictureUrl || null,
+          salary: teacherDetails?.Salary || 0
+        },
         month,
         summary: data || {
           PresentDays: 0,
