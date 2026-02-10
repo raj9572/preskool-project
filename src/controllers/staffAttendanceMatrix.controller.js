@@ -1,3 +1,4 @@
+import { StaffModel } from "../models/staff.model.js";
 import { StaffAttendanceMatrixModel } from "../models/staffAttendanceMatrix.model.js";
 
 export const StaffAttendanceMatrixController = {
@@ -67,6 +68,7 @@ export const StaffAttendanceMatrixController = {
         });
       }
 
+      const staffDetails = await StaffModel.getById(parseInt(staffId));
       const data =
         await StaffAttendanceMatrixModel.getMonthlyStaffSummary(
           parseInt(staffId),
@@ -77,6 +79,13 @@ export const StaffAttendanceMatrixController = {
         success: true,
         staffId: Number(staffId),
         month,
+        staffDetails:{
+          fullName: staffDetails?.FullName || "N/A",
+          role: staffDetails?.Role || "N/A",
+          email: staffDetails?.Email || "N/A",
+          profilePictureUrl: staffDetails?.ProfilePictureUrl || null,
+          salary: staffDetails?.Salary || 0
+        },
         summary: data || {
           PresentDays: 0,
           AbsentDays: 0,
