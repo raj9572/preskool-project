@@ -87,17 +87,9 @@ export const StudentExamResultController = {
       const dto = req.body;
       const resultId = parseInt(req.params.id);
 
-      const studentId = Number(dto.studentId);
-      if (!studentId || Number.isNaN(studentId)) {
-        return res.status(400).json({
-          success: false,
-          message: "studentId must be integer"
-        });
-      }
-
       const updated = await StudentExamResultModel.update(resultId, {
-        ...dto,
-        studentId
+        ...dto
+        
       });
 
       if (updated.affectedRows === 0) {
@@ -109,6 +101,8 @@ export const StudentExamResultController = {
       res.status(500).json({ success: false, message: err.message });
     }
   },
+
+ 
 
 
   async delete(req, res) {
@@ -122,5 +116,60 @@ export const StudentExamResultController = {
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
+  },
+
+   async updateManyResults(req, res) {
+  try {
+
+    const data = req.body;
+
+    if (!Array.isArray(data) || data.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payload. Send array of results."
+      });
+    }
+
+    await StudentExamResultModel.updateMany(data);
+
+    res.json({
+      success: true,
+      message: "Exam results updated successfully"
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }},
+
+  async createMany(req, res) {
+  try {
+    const results = req.body;
+
+    if (!Array.isArray(results) || results.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Send array of exam results"
+      });
+    }
+
+    await StudentExamResultModel.createMany(results);
+
+    return res.json({
+      success: true,
+      message: "Exam results inserted successfully",
+      count: results.length
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
+}
+
 };
