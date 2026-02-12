@@ -4,8 +4,17 @@ export const TeacherSalaryController = {
 
   async create(req, res) {
     try {
-      const data = await TeacherSalaryModel.create(req.body);
-      res.status(201).json({ success: true, data });
+      const data = req.body;
+
+			if (!Array.isArray(data) || data.length === 0) {
+				return res.status(400).json({
+					success: false,
+					message: "Request body must be a non-empty array",
+				});
+			}
+      const results = await Promise.all(data.map((item) => TeacherSalaryModel.create(item)));
+      // const res = await TeacherSalaryModel.create(data);
+      res.status(201).json({ success: true, results });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
