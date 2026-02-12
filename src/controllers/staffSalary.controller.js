@@ -4,8 +4,16 @@ export const StaffSalaryController = {
 
   async create(req, res) {
     try {
-      const data = await StaffSalaryModel.create(req.body);
-      res.json({ success: true, data });
+      const data = req.body;
+
+			if (!Array.isArray(data) || data.length === 0) {
+				return res.status(400).json({
+					success: false,
+					message: "Request body must be a non-empty array",
+				});
+			}
+      const results = await Promise.all(data.map((item) => StaffSalaryModel.create(item)));
+      res.json({ success: true, data: results });
     } catch (err) {
       res.status(400).json({ success: false, message: err.message });
     }

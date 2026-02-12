@@ -14,7 +14,7 @@ export const TeacherSalaryController = {
 			}
       const results = await Promise.all(data.map((item) => TeacherSalaryModel.create(item)));
       // const res = await TeacherSalaryModel.create(data);
-      res.status(201).json({ success: true, results });
+      res.status(201).json({ success: true, data: results });
     } catch (err) {
       res.status(500).json({ success: false, message: err.message });
     }
