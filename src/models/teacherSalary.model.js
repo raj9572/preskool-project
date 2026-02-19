@@ -26,12 +26,17 @@ export const TeacherSalaryModel = {
   },
 
   // GET ALL
-  async getAll() {
-    const pool = await poolPromise;
-    const result = await pool.request()
-      .query(`SELECT * FROM dbo.TeacherSalary ORDER BY SalaryMonth DESC`);
-    return result.recordset;
-  },
+ async getAll() {
+  const pool = await poolPromise;
+  const result = await pool.request().query(`
+    SELECT ts.*, t.FullName
+    FROM TeacherSalary ts
+    JOIN Teachers t ON t.TeacherID = ts.TeacherID
+    ORDER BY ts.CreatedAt DESC
+  `);
+  return result.recordset;
+},
+
 
   // GET BY ID
   async getById(id) {
