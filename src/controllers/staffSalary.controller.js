@@ -43,5 +43,31 @@ export const StaffSalaryController = {
   async delete(req, res) {
     await StaffSalaryModel.delete(req.params.id);
     res.json({ success: true, message: "Salary deleted" });
+  },
+  async bulkMarkPaid(req, res) {
+  try {
+    const { staffIds } = req.body;
+
+    if (!Array.isArray(staffIds) || staffIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "staffIds array required"
+      });
+    }
+
+    const result = await StaffSalaryModel.bulkMarkPaidByStaffIds(staffIds);
+
+    res.json({
+      success: true,
+      affectedRows: result.AffectedRows
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
+}
+
 };

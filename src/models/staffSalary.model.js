@@ -100,5 +100,23 @@ export const StaffSalaryModel = {
     await pool.request()
       .input("SalaryID", sql.Int, id)
       .query(`DELETE FROM StaffSalary WHERE SalaryID = @SalaryID`);
-  }
+  },
+
+  async bulkMarkPaidByStaffIds(staffIds) {
+  const pool = await poolPromise;
+
+  const table = new sql.Table("dbo.StaffIdList");
+  table.columns.add("StaffID", sql.Int);
+
+  staffIds.forEach(id => {
+    table.rows.add(id);
+  });
+
+  const result = await pool.request()
+    .input("StaffIds", table)
+    .execute("dbo.BulkMarkStaffSalaryPaid");
+
+  return result.recordset[0];
+}
+
 };
