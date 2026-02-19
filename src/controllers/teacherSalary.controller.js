@@ -45,5 +45,32 @@ export const TeacherSalaryController = {
     const ok = await TeacherSalaryModel.delete(+req.params.id);
     if (!ok) return res.status(404).json({ success: false, message: "Not found" });
     res.json({ success: true, message: "Salary deleted" });
+  },
+
+  async bulkMarkPaid(req, res) {
+  try {
+    const { teacherIds } = req.body;
+
+    if (!Array.isArray(teacherIds) || teacherIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "teacherIds array required"
+      });
+    }
+
+    const result = await TeacherSalaryModel.bulkMarkPaidByTeacherIds(teacherIds);
+
+    res.json({
+      success: true,
+      affectedRows: result.AffectedRows
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message
+    });
   }
+}
+
 };

@@ -90,5 +90,23 @@ export const TeacherSalaryModel = {
       .input("SalaryID", sql.Int, id)
       .query(`DELETE FROM dbo.TeacherSalary WHERE SalaryID = @SalaryID`);
     return result.rowsAffected[0] > 0;
-  }
+  },
+
+  async bulkMarkPaidByTeacherIds(teacherIds) {
+  const pool = await poolPromise;
+
+  const table = new sql.Table("dbo.TeacherIdList");
+  table.columns.add("TeacherID", sql.Int);
+
+  teacherIds.forEach(id => {
+    table.rows.add(id);
+  });
+
+  const result = await pool.request()
+    .input("TeacherIds", table)
+    .execute("dbo.BulkMarkTeacherSalaryPaid");   
+
+  return result.recordset[0];
+}
+
 };
