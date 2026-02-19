@@ -20,6 +20,12 @@ import transportRoutes from "./routes/transport.routes.js";
 import teacherSalaryRoutes from "./routes/teacherSalary.routes.js";
 import staffSalaryRoutes from "./routes/staffSalary.routes.js";
 import teacherTimeTableRoutes from "./routes/teacherTimeTable.routes.js";
+import expenseRoutes from "./routes/expense.routes.js";
+import bookRoutes from "./routes/book.routes.js";
+import bookIssueRoutes from "./routes/bookIssue.routes.js";
+import inventoryRoutes from "./routes/inventory.routes.js";
+import revenueRoutes from "./routes/revenue.routes.js";
+import pendingFeeRoutes from "./routes/pendingfee.routes.js";
 
 import { swaggerDocs } from "./swagger.js";
 
@@ -50,8 +56,12 @@ app.use("/api", transportRoutes);
 app.use("/api", teacherSalaryRoutes);
 app.use("/api", staffSalaryRoutes);
 app.use("/api", teacherTimeTableRoutes);
-
-
+app.use("/api", expenseRoutes);
+app.use("/api", bookRoutes);
+app.use("/api", bookIssueRoutes);
+app.use("/api", inventoryRoutes);
+app.use("/api", revenueRoutes);
+app.use("/api", pendingFeeRoutes);
 
 // Swagger
 swaggerDocs(app);
