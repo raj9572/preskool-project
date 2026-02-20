@@ -3,11 +3,30 @@ import { poolPromise, sql } from "../config/db.js";
 export const TeacherModel = {
 
   async getAll() {
-    const pool = await poolPromise;
-    const result = await pool.request()
-      .query(`SELECT * FROM dbo.Teachers ORDER BY TeacherID DESC`);
-    return result.recordset;
-  },
+  const pool = await poolPromise;
+
+  const result = await pool.request().query(`
+    DECLARE @TodayColumn NVARCHAR(50)
+    DECLARE @SQL NVARCHAR(MAX)
+
+    -- Get today's date in yyyy-mm-dd format
+    SET @TodayColumn = QUOTENAME(CONVERT(VARCHAR(10), GETDATE(), 23))
+
+    SET @SQL = '
+      SELECT 
+          t.*,
+          ISNULL(a.' + @TodayColumn + ', ''Not Marked'') AS TodayStatus
+      FROM dbo.Teachers t
+      LEFT JOIN dbo.TeacherAttendance a
+          ON t.TeacherID = a.TeacherID
+      ORDER BY t.TeacherID DESC
+    '
+
+    EXEC sp_executesql @SQL
+  `);
+
+  return result.recordset;
+},
 
   async getById(id) {
     const pool = await poolPromise;
