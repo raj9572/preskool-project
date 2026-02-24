@@ -4,7 +4,7 @@ export const PendingFeeController = {
 
   async getPendingFees(req, res) {
     try {
-    const { StudentID, ClassID, SectionID } = req.body;
+    const { StudentID, ClassID, SectionID } = req.query;
 
     if (!StudentID && !ClassID) {
       return res.status(400).json({
