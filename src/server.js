@@ -28,6 +28,7 @@ import revenueRoutes from "./routes/revenue.routes.js";
 import pendingFeeRoutes from "./routes/pendingfee.routes.js";
 
 import { swaggerDocs } from "./swagger.js";
+import "./cron/attendance.cron.js";
 
 dotenv.config();
 

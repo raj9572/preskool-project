@@ -22,6 +22,8 @@ router.get("/v1/student-attendance/by-id/:studentId", StudentAttendanceMatrixCon
 // Write
 router.post("/writestudentattendance/today", AttendanceWriterController.setToday);
 router.post("/writestudentattendance/:date", AttendanceWriterController.setForDate);
+router.get("/attendance/send-absent-email", AttendanceWriterController.sendAbsentEmail);
+
 
 // Counts
 router.get("/v1/attendance-count/today", AttendanceCountController.getToday);
