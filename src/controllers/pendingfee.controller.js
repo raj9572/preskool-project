@@ -4,34 +4,52 @@ export const PendingFeeController = {
 
   async getPendingFees(req, res) {
     try {
-    const { StudentID, ClassID, SectionID } = req.query;
+      const { StudentID, ClassID, SectionID } = req.query;
 
-    if (!StudentID && !ClassID) {
-      return res.status(400).json({
+      if (!StudentID && !ClassID) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide StudentID or ClassID",
+        });
+      }
+
+      const data = await PendingFeeModels.getPendingFees({
+        StudentID,
+        ClassID,
+        SectionID,
+      });
+
+      res.status(200).json({
+        success: true,
+        count: data.length,
+        data,
+      });
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
         success: false,
-        message: "Please provide StudentID or ClassID",
+        message: "Server Error",
       });
     }
+  },
 
-    const data = await PendingFeeModels.getPendingFees({
-      StudentID,
-      ClassID,
-      SectionID,
-    });
+  async sendPendingFeeEmails(req, res) {
+    try {
+      const result = await PendingFeeModels.sendPendingFeeEmails();
 
-    res.status(200).json({
-      success: true,
-      count: data.length,
-      data,
-    });
+      if (!result.success) {
+        return res.status(500).json(result);
+      }
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-    });
-  }
-  }
+      res.json(result);
 
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  },
 };

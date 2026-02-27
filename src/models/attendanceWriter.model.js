@@ -58,16 +58,51 @@ export const AttendanceWriterModel = {
     await brevoClient.transactionalEmails.sendTransacEmail({
       sender: {
         email: "noreply@webbuild.shop",
-        name: "Preskool",
+        name: "Preschool",
       },
       subject: "Attendance Alert",
       htmlContent: `
-        <p>Dear Parent,</p>
-        <p>Your child was absent today ${today}.</p>
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+          
+          <p><strong>Dear Parent/Guardian 👋,</strong></p>
+
+          <p>🌸 Greetings from the School Administration! 🌸</p>
+
+          <p>
+            This is to inform you that your child was marked 
+            <strong>absent today 📅 ${today}</strong>, 
+            as per our attendance records.
+          </p>
+
+          <p>
+            📚 <strong>Regular attendance is important</strong> for your child’s learning 
+            and overall development.
+          </p>
+
+          <p>
+            If the absence was due to a valid reason 🤒🚑✈️, 
+            kindly inform the class teacher or submit the leave details at your convenience.
+          </p>
+
+          <p>
+            📞 For any clarification or support, please feel free to contact the school office.
+          </p>
+
+          <p>🙏 Thank you for your cooperation and support.</p>
+
+          <br/>
+
+          <p>
+            <strong>Warm regards 🤝,</strong><br/>
+            School Administration Team<br/>
+            🏫 Preschool
+          </p>
+
+        </div>
       `,
       to: students.map((s) => ({
         email: s.ParentEmail,
-        name: s.Name,
+        name: s.FullName,
       })),
     });
 
@@ -87,4 +122,5 @@ export const AttendanceWriterModel = {
         return { success: false, error: err.message };
     }
 }
+
 }

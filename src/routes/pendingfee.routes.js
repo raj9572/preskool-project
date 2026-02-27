@@ -6,5 +6,6 @@ const router = express.Router();
 router.use(protect);
 
 router.get("/pending-fees", PendingFeeController.getPendingFees);
+router.get("/send-fee-email", PendingFeeController.sendPendingFeeEmails);
 
 export default router;
