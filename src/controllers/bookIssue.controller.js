@@ -13,6 +13,7 @@ export const BookIssueController = {
 
   async getAll(req, res) {
     try {
+      console.log("all",req.params.studentId)
       const month = req.query.month; // ?month=2026-02
       const data = await BookIssueModel.getAll(month);
       res.json({ success: true, data });
@@ -23,7 +24,17 @@ export const BookIssueController = {
 
   async getById(req, res) {
     try {
+      console.log("id",req.params.id)
       const data = await BookIssueModel.getById(req.params.id);
+      res.json({ success: true, data });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  },
+  async getByStudentId(req, res) {
+    try {
+      console.log(req.params.studentId)
+      const data = await BookIssueModel.getByStudentId(req.params.studentId);
       res.json({ success: true, data });
     } catch (error) {
       res.status(500).json({ success: false, message: error.message });

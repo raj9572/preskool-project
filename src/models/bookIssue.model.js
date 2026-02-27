@@ -12,7 +12,7 @@ export const BookIssueModel = {
       .input("IssueDate", sql.Date, data.issueDate)
       .input("DueDate", sql.Date, data.dueDate)
       .input("ReturnDate", sql.Date, data.returnDate || null)
-      .input("FineAmount", sql.Decimal(10,2), data.fineAmount || 0)
+      .input("FineAmount", sql.Decimal(10, 2), data.fineAmount || 0)
       .input("FinePaid", sql.Bit, data.finePaid || false)
       .input("IssueStatus", sql.NVarChar(20), data.issueStatus || "Issued")
       .input("Remarks", sql.NVarChar(500), data.remarks || null)
@@ -75,6 +75,36 @@ export const BookIssueModel = {
 
     return result.recordset[0];
   },
+  async getByStudentId(studentId) {
+    const pool = await poolPromise;
+
+    const result = await pool.request()
+      .input("StudentId", sql.Int, studentId)
+      .query(`
+      SELECT 
+        bi.IssueId,
+        bi.BookId,
+        b.BookTitle,
+        b.ISBN,
+        bi.IssueDate,
+        bi.DueDate,
+        bi.ReturnDate,
+        bi.FineAmount,
+        bi.FinePaid,
+        bi.IssueStatus,
+        bi.Remarks,
+        bi.CreatedAt,
+        bi.UpdatedAt
+      FROM dbo.BookIssues bi
+      INNER JOIN dbo.Books b 
+        ON bi.BookId = b.BookId
+      WHERE bi.IssuedToId = @StudentId
+        AND bi.IssuedToType = 'Student'
+      ORDER BY bi.IssueDate DESC
+    `);
+
+    return result.recordset;
+  },
 
   async update(id, data) {
     const pool = await poolPromise;
@@ -82,7 +112,7 @@ export const BookIssueModel = {
     const result = await pool.request()
       .input("IssueId", sql.Int, id)
       .input("ReturnDate", sql.Date, data.returnDate || null)
-      .input("FineAmount", sql.Decimal(10,2), data.fineAmount || null)
+      .input("FineAmount", sql.Decimal(10, 2), data.fineAmount || null)
       .input("FinePaid", sql.Bit, data.finePaid || null)
       .input("IssueStatus", sql.NVarChar(20), data.issueStatus || null)
       .input("Remarks", sql.NVarChar(500), data.remarks || null)

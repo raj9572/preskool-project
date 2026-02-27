@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/book-issues", BookIssueController.create);
 router.get("/book-issues", BookIssueController.getAll); // with ?month=YYYY-MM
 router.get("/book-issues/:id", BookIssueController.getById);
+router.get("/book-issues/student/:studentId", BookIssueController.getByStudentId);
 router.put("/book-issues/:id", BookIssueController.update);
 router.delete("/book-issues/:id", BookIssueController.delete);
 
