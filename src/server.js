@@ -26,6 +26,7 @@ import bookIssueRoutes from "./routes/bookIssue.routes.js";
 import inventoryRoutes from "./routes/inventory.routes.js";
 import revenueRoutes from "./routes/revenue.routes.js";
 import pendingFeeRoutes from "./routes/pendingfee.routes.js";
+import fineRoutes from "./routes/fine.routes.js";
 
 import { swaggerDocs } from "./swagger.js";
 import "./cron/attendance.cron.js";
@@ -63,6 +64,7 @@ app.use("/api", bookIssueRoutes);
 app.use("/api", inventoryRoutes);
 app.use("/api", revenueRoutes);
 app.use("/api", pendingFeeRoutes);
+app.use("/api",fineRoutes);
 
 // Swagger
 swaggerDocs(app);
