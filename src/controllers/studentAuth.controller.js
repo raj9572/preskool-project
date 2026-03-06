@@ -55,6 +55,32 @@ export const studentController = {
     }
   },
 
+  async getByClassStrength(req, res) {
+      try {
+        const { classID, sectionID } = req.query;
+  
+        
+  
+        const data = await StudentModel.getStudentClassStrength({
+          ClassID: classID,
+          SectionID: sectionID,
+        });
+  
+        res.status(200).json({
+          success: true,
+          count: data.length,
+          data,
+        });
+  
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({
+          success: false,
+          message: "Server Error",
+        });
+      }
+    },
+
   async deleteStudentComplete(req, res) {
     try {
       const data = await StudentModel.getById(req.params.id);

@@ -37,43 +37,86 @@ export const StudentModel = {
   },
 
   async upsert(student) {
-    const pool = await poolPromise;
-    const req = pool.request();
+  const pool = await poolPromise;
+  const req = pool.request();
 
-    req.input("StudentID", sql.Int, student.studentId || 0);
-    req.input("FatherPhoto", sql.NVarChar(300), student.fatherPhoto || null);
-    req.input("MotherPhoto", sql.NVarChar(300), student.motherPhoto || null);
-    req.input("GuardianPhoto", sql.NVarChar(300), student.guardianPhoto || null);
-    req.input("PhotoUrl", sql.NVarChar(300), student.photo || null);
-    req.input("Status", sql.NVarChar(30), student.status || null);
-    req.input("RollNo", sql.NVarChar(20), student.rollNo || null);
-    req.input("AdmissionNo", sql.NVarChar(50), student.admissionNo || null);
-    req.input("JoiningDate", sql.Date, student.joiningDate || null);
-    req.input("Program", sql.NVarChar(100), student.program || null);
-    req.input("YearSemester", sql.NVarChar(50), student.yearSemester || null);
-    req.input("PreviousRecord", sql.NVarChar(200), student.previousRecord || null);
-    req.input("GPA", sql.NVarChar(20), student.gpa || null);
-    req.input("Attendance", sql.NVarChar(20), student.attendance || null);
-    req.input("Subjects", sql.NVarChar(200), student.subjects || null);
-    req.input("FullName", sql.NVarChar(200), student.fullName || null);
-    req.input("DOB", sql.Date, student.dob || null);
-    req.input("Gender", sql.NVarChar(10), student.gender || null);
-    req.input("ClassID", sql.VarChar(10), student.class || null);
-    req.input("SectionID", sql.VarChar(10), student.section || null);
-    req.input("Address", sql.NVarChar(500), student.address || null);
-    req.input("ContactNumber", sql.NVarChar(50), student.contact || null);
-    req.input("EmailAddress", sql.NVarChar(200), student.email || null);
-    req.input("Nationality", sql.NVarChar(100), student.nationality || null);
-    req.input("GuardianName", sql.NVarChar(200), student.guardianName || null);
-    req.input("GuardianRelation", sql.NVarChar(100), student.guardianRelation || null);
-    req.input("GuardianContact", sql.NVarChar(50), student.guardianContact || null);
-    req.input("GuardianOccupation", sql.NVarChar(100), student.guardianOccupation || null);
-    req.input("GuardianAddress", sql.NVarChar(500), student.guardianAddress || null);
-    req.input("ParentEmail", sql.NVarChar(500), student.parentEmail || null);
+  req.input("StudentID", sql.Int, student.studentId || 0);
 
-    const result = await req.execute("dbo.UpsertStudent");
-    return result.recordset?.[0];
-  },
+  // photos
+  req.input("FatherPhoto", sql.NVarChar(300), student.fatherPhoto );
+  req.input("MotherPhoto", sql.NVarChar(300), student.motherPhoto );
+  req.input("GuardianPhoto", sql.NVarChar(300), student.guardianPhoto );
+
+  // basic info
+  req.input("PhotoUrl", sql.NVarChar(300), student.photo );
+  req.input("Status", sql.NVarChar(30), student.status);
+  req.input("RollNo", sql.NVarChar(20), student.rollNo );
+  req.input("AdmissionNo", sql.NVarChar(50), student.admissionNo );
+  req.input("JoiningDate", sql.Date, student.joiningDate );
+  req.input("Program", sql.NVarChar(100), student.program );
+  req.input("YearSemester", sql.NVarChar(50), student.yearSemester );
+  req.input("PreviousRecord", sql.NVarChar(200), student.previousRecord );
+  req.input("GPA", sql.NVarChar(20), student.gpa );
+  req.input("Attendance", sql.NVarChar(20), student.attendance );
+  req.input("Subjects", sql.NVarChar(200), student.subjects );
+
+  // student details
+  req.input("FullName", sql.NVarChar(200), student.fullName );
+  req.input("DOB", sql.Date, student.dob );
+  req.input("Gender", sql.NVarChar(10), student.gender );
+  req.input("ClassID", sql.VarChar(10), student.class );
+  req.input("SectionID", sql.VarChar(10), student.section );
+  req.input("Address", sql.NVarChar(500), student.address );
+  req.input("ContactNumber", sql.NVarChar(50), student.contact );
+  req.input("EmailAddress", sql.NVarChar(200), student.email );
+  req.input("Nationality", sql.NVarChar(100), student.nationality );
+
+  req.input("IdentificationNumber", sql.NVarChar(100), student.identificationNumber );
+  req.input("EnrollmentNumber", sql.NVarChar(100), student.enrollmentNumber );
+  req.input("AdmissionDate", sql.Date, student.admissionDate );
+  req.input("ProgramName", sql.NVarChar(200), student.programName );
+  req.input("YearOrSemester", sql.NVarChar(100), student.yearOrSemester );
+  req.input("PreviousAcademicRecord", sql.NVarChar(sql.MAX), student.previousAcademicRecord );
+  req.input("GPAOrMarks", sql.NVarChar(50), student.gpaOrMarks );
+  req.input("AttendancePercentage", sql.Decimal(5,2), student.attendancePercentage );
+  req.input("SubjectsTaken", sql.NVarChar(sql.MAX), student.subjectsTaken );
+  req.input("AcademicStatus", sql.NVarChar(100), student.academicStatus );
+
+  // guardian
+  req.input("GuardianName", sql.NVarChar(200), student.guardianName );
+  req.input("GuardianRelation", sql.NVarChar(100), student.guardianRelation );
+  req.input("GuardianContact", sql.NVarChar(50), student.guardianContact );
+  req.input("GuardianOccupation", sql.NVarChar(100), student.guardianOccupation );
+  req.input("GuardianAddress", sql.NVarChar(500), student.guardianAddress );
+  req.input("ParentEmail", sql.NVarChar(500), student.parentEmail );
+
+  // NEW TRANSPORT + HOUSE
+  req.input("HouseName", sql.NVarChar(100), student.houseName );
+  req.input("Cast", sql.NVarChar(100), student.cast );
+  req.input("PendingFee", sql.Decimal(10,2), student.pendingFee );
+  req.input("Route", sql.NVarChar(100), student.route );
+  req.input("TransportStatus", sql.NVarChar(10), student.transportStatus );
+  req.input("VehicleNo", sql.NVarChar(50), student.vehicleNo );
+
+  const result = await req.execute("dbo.UpsertStudent");
+
+  return result.recordset?.[0];
+},
+
+async getStudentClassStrength(payload) {
+        const {  ClassID, SectionID } = payload;
+
+        const pool = await poolPromise;
+        const request = pool.request();
+
+        request.input("ClassID", sql.VarChar(50), ClassID || null)
+        request.input("SectionID", sql.VarChar(50), SectionID || null)
+        
+
+        const result = await request.execute("GetStudentStrength");;
+
+        return result.recordset;
+    },
 
   async delete(studentId) {
     const pool = await poolPromise;

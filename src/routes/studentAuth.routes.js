@@ -9,6 +9,7 @@ router.use(protect);
 
 router.get("/students", studentController.getAll);
 router.get("/students/:id", studentController.getById);
+router.get("/students/class/strength", studentController.getByClassStrength);
 
 router.post("/students/upsert", studentController.createOrUpdate);  
 
