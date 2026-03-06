@@ -23,6 +23,7 @@ export const TransportModel = {
   async create(data) {
     const pool = await poolPromise;
     const result = await pool.request()
+       .input("TransportID", sql.VarChar(50), data.transportId)
       .input("TransportNumber", sql.NVarChar, data.transportNumber)
       .input("TransportType", sql.NVarChar, data.transportType)
       .input("TransporterName", sql.NVarChar, data.transporterName)
@@ -34,10 +35,10 @@ export const TransportModel = {
       .input("Status", sql.NVarChar, data.status || "Active")
       .query(`
         INSERT INTO dbo.Transport
-        (TransportNumber, TransportType, TransporterName, OwnerName,
+        (TransportID, TransportNumber, TransportType, TransporterName, OwnerName,
          JoiningDate, GPSNumber, Route, Description, Status)
         VALUES
-        (@TransportNumber, @TransportType, @TransporterName, @OwnerName,
+        (@TransportID, @TransportNumber, @TransportType, @TransporterName, @OwnerName,
          @JoiningDate, @GPSNumber, @Route, @Description, @Status);
 
         SELECT SCOPE_IDENTITY() AS TransportID;
@@ -49,7 +50,7 @@ export const TransportModel = {
   async update(id, data) {
     const pool = await poolPromise;
     const result = await pool.request()
-      .input("TransportID", sql.Int, id)
+      .input("TransportID", sql.VarChar(50), id)
       .input("TransportNumber", sql.NVarChar, data.transportNumber)
       .input("TransportType", sql.NVarChar, data.transportType)
       .input("TransporterName", sql.NVarChar, data.transporterName)
