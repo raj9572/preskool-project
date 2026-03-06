@@ -57,14 +57,16 @@ export const studentController = {
 
   async getByClassStrength(req, res) {
       try {
-        const { classID, sectionID } = req.query;
+        // const { classID, sectionID } = req.query;
   
         
   
-        const data = await StudentModel.getStudentClassStrength({
-          ClassID: classID,
-          SectionID: sectionID,
-        });
+        // const data = await StudentModel.getStudentClassStrength({
+        //   ClassID: classID,
+        //   SectionID: sectionID,
+        // });
+  
+        const data = await StudentModel.getStudentClassStrength();
   
         res.status(200).json({
           success: true,

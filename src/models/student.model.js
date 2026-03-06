@@ -103,20 +103,54 @@ export const StudentModel = {
   return result.recordset?.[0];
 },
 
-async getStudentClassStrength(payload) {
-        const {  ClassID, SectionID } = payload;
-
-        const pool = await poolPromise;
-        const request = pool.request();
-
-        request.input("ClassID", sql.VarChar(50), ClassID || null)
-        request.input("SectionID", sql.VarChar(50), SectionID || null)
+async getStudentClassStrength() {
         
 
-        const result = await request.execute("GetStudentStrength");;
+        const pool = await poolPromise;
+        const result = await pool.request().query(`
+      SELECT 
+        ClassID,
+        SectionID,
+        COUNT(StudentID) AS Strength
+      FROM dbo.Students
+      GROUP BY ClassID, SectionID
+      ORDER BY ClassID, SectionID
+    `);
 
-        return result.recordset;
+    const rows = result.recordset;
+          const grouped = {};
+
+    rows.forEach(row => {
+      if (!grouped[row.ClassID]) {
+        grouped[row.ClassID] = {
+          class: row.ClassID,
+          sections: []
+        };
+      }
+
+      grouped[row.ClassID].sections.push({
+        section: row.SectionID,
+        strength: row.Strength
+      });
+    });
+
+    const response = Object.values(grouped);
+    return response;
     },
+// async getStudentClassStrength(payload) {
+//         const {  ClassID, SectionID } = payload;
+
+//         const pool = await poolPromise;
+//         const request = pool.request();
+
+//         request.input("ClassID", sql.VarChar(50), ClassID || null)
+//         request.input("SectionID", sql.VarChar(50), SectionID || null)
+        
+
+//         const result = await request.execute("GetStudentStrength");;
+
+//         return result.recordset;
+//     },
 
   async delete(studentId) {
     const pool = await poolPromise;
