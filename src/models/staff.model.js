@@ -37,38 +37,45 @@ export const StaffModel = {
   },
 
   async upsert(staff) {
-    const pool = await poolPromise;
-    const req = pool.request();
+  const pool = await poolPromise;
+  const req = pool.request();
 
-    req.input("StaffID", sql.Int, staff.staffId || 0);
+  req.input("StaffID", sql.Int, staff.staffId || 0);
 
-    req.input("FullName", sql.NVarChar(100), staff.fullName || null);
-    req.input("Role", sql.NVarChar(50), staff.role || null);
-    req.input("ContactNumber", sql.NVarChar(15), staff.contactNumber || null);
-    req.input("Email", sql.NVarChar(100), staff.email || null);
-    req.input("Gender", sql.NVarChar(10), staff.gender || null);
-    req.input("DateOfBirth", sql.Date, staff.dateOfBirth || null);
-    req.input("Qualification", sql.NVarChar(100), staff.qualification || null);
-    req.input("DateOfJoining", sql.Date, staff.dateOfJoining || null);
-    req.input("ExperienceYears", sql.Int, staff.experienceYears || null);
-    req.input("Address", sql.NVarChar(255), staff.address || null);
-    req.input("City", sql.NVarChar(100), staff.city || null);
-    req.input("State", sql.NVarChar(100), staff.state || null);
-    req.input("PostalCode", sql.NVarChar(20), staff.postalCode || null);
-    req.input("Nationality", sql.NVarChar(50), staff.nationality || null);
-    req.input("MaritalStatus", sql.NVarChar(20), staff.maritalStatus || null);
-    req.input("EmergencyContactName", sql.NVarChar(100), staff.emergencyContactName || null);
-    req.input("EmergencyContactNumber", sql.NVarChar(20), staff.emergencyContactNumber || null);
-    req.input("ProfilePictureUrl", sql.NVarChar(255), staff.profilePictureUrl || null);
-    req.input("VehicleNumber", sql.NVarChar(50), staff.vehicleNumber || null);
-    req.input("TransportNumber", sql.NVarChar(50), staff.transportNumber || null);
-    req.input("ProfilePhoto", sql.NVarChar(300), staff.profilePhoto || null);
-    req.input("IDProofPhoto", sql.NVarChar(300), staff.idProofPhoto || null);
-    req.input("Salary", sql.Decimal(10, 2), staff.salary || null);
+  req.input("FullName", sql.NVarChar(100), staff.fullName || null);
+  req.input("Role", sql.NVarChar(50), staff.role || null);
+  req.input("ContactNumber", sql.NVarChar(15), staff.contactNumber || null);
+  req.input("Email", sql.NVarChar(100), staff.email || null);
+  req.input("Gender", sql.NVarChar(10), staff.gender || null);
+  req.input("DateOfBirth", sql.Date, staff.dateOfBirth || null);
+  req.input("Qualification", sql.NVarChar(100), staff.qualification || null);
+  req.input("DateOfJoining", sql.Date, staff.dateOfJoining || null);
+  req.input("ExperienceYears", sql.Int, staff.experienceYears || null);
+  req.input("Address", sql.NVarChar(255), staff.address || null);
+  req.input("City", sql.NVarChar(100), staff.city || null);
+  req.input("State", sql.NVarChar(100), staff.state || null);
+  req.input("PostalCode", sql.NVarChar(20), staff.postalCode || null);
+  req.input("Nationality", sql.NVarChar(50), staff.nationality || null);
+  req.input("MaritalStatus", sql.NVarChar(20), staff.maritalStatus || null);
+  req.input("EmergencyContactName", sql.NVarChar(100), staff.emergencyContactName || null);
+  req.input("EmergencyContactNumber", sql.NVarChar(20), staff.emergencyContactNumber || null);
+  req.input("ProfilePictureUrl", sql.NVarChar(255), staff.profilePictureUrl || null);
 
-    const result = await req.execute("dbo.UpsertStaff");
-    return result.recordset?.[0];
-  },
+  req.input("VehicleNumber", sql.NVarChar(50), staff.vehicleNumber || null);
+  req.input("TransportNumber", sql.NVarChar(50), staff.transportNumber || null);
+  req.input("ProfilePhoto", sql.NVarChar(300), staff.profilePhoto || null);
+  req.input("IDProofPhoto", sql.NVarChar(300), staff.idProofPhoto || null);
+
+  req.input("Salary", sql.Decimal(10, 2), staff.salary || null);
+
+  // ✅ NEW FIELDS
+  req.input("PreviousSalary", sql.Decimal(10, 2), staff.previousSalary || null);
+  req.input("Caste", sql.NVarChar(100), staff.caste || null);
+
+  const result = await req.execute("dbo.UpsertStaff");
+
+  return result.recordset?.[0];
+},
 
   async delete(id) {
     const pool = await poolPromise;
