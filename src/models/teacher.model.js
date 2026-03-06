@@ -37,40 +37,54 @@ export const TeacherModel = {
   },
 
   async upsert(teacher) {
-    const pool = await poolPromise;
-    const req = pool.request();
+  const pool = await poolPromise;
+  const req = pool.request();
 
-    req.input("TeacherID", sql.Int, teacher.teacherId || 0);
-    req.input("FullName", sql.NVarChar(100), teacher.fullName || null);
-    req.input("Subject", sql.NVarChar(100), teacher.subject || null);
-    req.input("Email", sql.NVarChar(100), teacher.email || null);
-    req.input("ContactNumber", sql.NVarChar(15), teacher.contactNumber || null);
-    req.input("Gender", sql.NVarChar(10), teacher.gender || null);
-    req.input("DateOfBirth", sql.Date, teacher.dateOfBirth || null);
-    req.input("Qualification", sql.NVarChar(100), teacher.qualification || null);
-    req.input("ExperienceYears", sql.Int, teacher.experienceYears || null);
-    req.input("Address", sql.NVarChar(255), teacher.address || null);
-    req.input("City", sql.NVarChar(100), teacher.city || null);
-    req.input("State", sql.NVarChar(100), teacher.state || null);
-    req.input("PostalCode", sql.NVarChar(20), teacher.postalCode || null);
-    req.input("Nationality", sql.NVarChar(50), teacher.nationality || null);
-    req.input("DateOfJoining", sql.Date, teacher.dateOfJoining || null);
-    req.input("BloodGroup", sql.NVarChar(5), teacher.bloodGroup || null);
-    req.input("EmergencyContactName", sql.NVarChar(100), teacher.emergencyContactName || null);
-    req.input("EmergencyContactNumber", sql.NVarChar(20), teacher.emergencyContactNumber || null);
-    req.input("MaritalStatus", sql.NVarChar(20), teacher.maritalStatus || null);
-    req.input("ProfilePictureUrl", sql.NVarChar(255), teacher.profilePictureUrl || null);
-    req.input("VehicleNumber", sql.NVarChar(50), teacher.vehicleNumber || null);
-    req.input("TransportNumber", sql.NVarChar(50), teacher.transportNumber || null);
-    req.input("ProfilePhoto", sql.NVarChar(300), teacher.profilePhoto || null);
-    req.input("IDProofPhoto", sql.NVarChar(300), teacher.idProofPhoto || null);
-    req.input("Salary", sql.Decimal(10, 2), teacher.salary || null);
-    req.input("Class", sql.NVarChar(20), teacher.class || null);
-    req.input("Section", sql.NVarChar(10), teacher.section || null);
+  const addInput = (name, type, value) => {
+    if (value !== undefined) {
+      req.input(name, type, value);
+    }
+  };
 
-    const result = await req.execute("dbo.UpsertTeacher");
-    return result.recordset?.[0];
-  },
+  addInput("TeacherID", sql.Int, teacher.teacherId || 0);
+  addInput("FullName", sql.NVarChar(100), teacher.fullName);
+  addInput("Subject", sql.NVarChar(100), teacher.subject);
+  addInput("Email", sql.NVarChar(100), teacher.email);
+  addInput("ContactNumber", sql.NVarChar(15), teacher.contactNumber);
+  addInput("Gender", sql.NVarChar(10), teacher.gender);
+  addInput("DateOfBirth", sql.Date, teacher.dateOfBirth);
+  addInput("Qualification", sql.NVarChar(100), teacher.qualification);
+  addInput("ExperienceYears", sql.Int, teacher.experienceYears);
+  addInput("Address", sql.NVarChar(255), teacher.address);
+  addInput("City", sql.NVarChar(100), teacher.city);
+  addInput("State", sql.NVarChar(100), teacher.state);
+  addInput("PostalCode", sql.NVarChar(20), teacher.postalCode);
+  addInput("Nationality", sql.NVarChar(50), teacher.nationality);
+  addInput("DateOfJoining", sql.Date, teacher.dateOfJoining);
+  addInput("BloodGroup", sql.NVarChar(5), teacher.bloodGroup);
+  addInput("EmergencyContactName", sql.NVarChar(100), teacher.emergencyContactName);
+  addInput("EmergencyContactNumber", sql.NVarChar(20), teacher.emergencyContactNumber);
+  addInput("MaritalStatus", sql.NVarChar(20), teacher.maritalStatus);
+  addInput("ProfilePictureUrl", sql.NVarChar(255), teacher.profilePictureUrl);
+
+  addInput("VehicleNumber", sql.NVarChar(50), teacher.vehicleNumber);
+  addInput("TransportNumber", sql.NVarChar(50), teacher.transportNumber);
+  addInput("ProfilePhoto", sql.NVarChar(300), teacher.profilePhoto);
+  addInput("IDProofPhoto", sql.NVarChar(300), teacher.idProofPhoto);
+
+  addInput("Salary", sql.Decimal(10,2), teacher.salary);
+  addInput("Class", sql.NVarChar(20), teacher.class);
+  addInput("Section", sql.NVarChar(10), teacher.section);
+
+  // ✅ NEW FIELDS
+  addInput("PreviousSalary", sql.Decimal(10,2), teacher.previousSalary);
+  addInput("Position", sql.NVarChar(100), teacher.position);
+  addInput("Caste", sql.NVarChar(100), teacher.caste);
+
+  const result = await req.execute("dbo.UpsertTeacher");
+
+  return result.recordset?.[0];
+},
 
   async delete(id) {
     const pool = await poolPromise;
