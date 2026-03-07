@@ -177,5 +177,92 @@ export const PendingFeeModels = {
             return { success: false, error: error.message };
         }
 
+    },
+
+    async getDefaulterStudents() {
+        try {
+
+            const pool = await poolPromise;
+            // 1️⃣ Call your stored procedure
+            const result = await pool.request().execute("PendingFeeReport_AllStudents");
+
+            const allStudents = result.recordset;
+            // 2️⃣ Filter:
+            // - Pending > 5000
+            // - Not already sent fee email
+            const filteredStudents = [];
+
+            for (const student of allStudents) {
+                if (student.TotalPending > 9000) {
+                    
+                        filteredStudents.push(student);
+                    
+                }
+
+               
+            }
+
+            if (!filteredStudents.length) {
+                return { success: true, message: "No students left for fee reminder." };
+            }
+
+            // 3️⃣ Get Parent Email from Students table
+            // const finalStudents = [];
+            // for (const student of filteredStudents) {
+
+               
+
+            //     if (parent.recordset.length) {
+            //         finalStudents.push({
+            //             StudentID: student.StudentID,
+            //             Name: student.FullName,
+            //             ParentEmail: parent.recordset[0].ParentEmail,
+            //             Pending: student.TotalPending
+            //         });
+            //     }
+            // }
+            // 4️⃣ Send email individually (to include pending amount)
+            let finalStudents ={} ;
+            for (const student of filteredStudents) {
+
+                const pool = await poolPromise;
+                const result = pool.request()
+                    .input("StudentID", sql.Int, student.StudentID || null)
+                    .execute("PendingFeeReport");
+
+                const Data = await result;
+
+                console.log('data',Data.recordset)
+                const feeFormat = Data.recordset.map((f) => ({"Fee Type":f.FeeType, "Total Fee":f.TotalFee, "Paid Amount":f.PaidAmount, "Pending Amount":f.PendingAmount}) )
+                finalStudents[student.FullName] = feeFormat;
+                // const feeRowsHtml = Data.recordset
+                //     .map(
+                //         (f) => `
+                //             <tr>
+                //                 <td style="padding:8px;border:1px solid #ddd;">${f.FeeType}</td>
+                //                 <td style="padding:8px;border:1px solid #ddd;">₹${f.TotalFee}</td>
+                //                 <td style="padding:8px;border:1px solid #ddd;">₹${f.PaidAmount}</td>
+                //                 <td style="padding:8px;border:1px solid #ddd;color:#d9534f;">
+                //                 ₹${f.PendingAmount}
+                //                 </td>
+                //             </tr>
+                //             `
+                //             )
+                //             .join("");
+
+    
+               
+
+              
+            }
+
+            return { success: true, count: Object.keys(finalStudents).length, defaulterStudent: finalStudents };
+            // return { success: true, count: finalStudents.length, students: finalStudents };
+        }
+        catch (error) {
+            console.error("Pending Fee Email Error:", error.message);
+            return { success: false, error: error.message };
+        }
+
     }
 }

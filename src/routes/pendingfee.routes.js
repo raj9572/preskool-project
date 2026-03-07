@@ -7,5 +7,6 @@ router.use(protect);
 
 router.get("/pending-fees", PendingFeeController.getPendingFees);
 router.get("/send-fee-email", PendingFeeController.sendPendingFeeEmails);
+router.get("/defaulter-students", PendingFeeController.DefaulterStudentsList);
 
 export default router;

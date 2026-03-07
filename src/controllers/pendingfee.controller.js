@@ -52,4 +52,22 @@ export const PendingFeeController = {
       });
     }
   },
+  async DefaulterStudentsList(req, res) {
+    try {
+      const result = await PendingFeeModels.getDefaulterStudents();
+
+      if (!result.success) {
+        return res.status(500).json(result);
+      }
+
+      res.json(result);
+
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({
+        success: false,
+        message: "Server Error",
+      });
+    }
+  },
 };
