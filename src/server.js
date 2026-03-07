@@ -27,6 +27,9 @@ import inventoryRoutes from "./routes/inventory.routes.js";
 import revenueRoutes from "./routes/revenue.routes.js";
 import pendingFeeRoutes from "./routes/pendingfee.routes.js";
 import fineRoutes from "./routes/fine.routes.js";
+import paymentRoutes from "./routes/payment.routes.js";
+import budgetRoutes from "./routes/budget.routes.js";
+
 
 import { swaggerDocs } from "./swagger.js";
 import "./cron/attendance.cron.js";
@@ -65,6 +68,8 @@ app.use("/api", inventoryRoutes);
 app.use("/api", revenueRoutes);
 app.use("/api", pendingFeeRoutes);
 app.use("/api",fineRoutes);
+app.use("/api", paymentRoutes);
+app.use("/api", budgetRoutes);
 
 // Swagger
 swaggerDocs(app);
