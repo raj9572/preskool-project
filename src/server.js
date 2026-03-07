@@ -34,6 +34,11 @@ import budgetRoutes from "./routes/budget.routes.js";
 import { swaggerDocs } from "./swagger.js";
 import "./cron/attendance.cron.js";
 
+import onlineMeetingRoutes from "./routes/meetingRoutes.js"; 
+
+
+
+
 dotenv.config();
 
 const app = express();
@@ -41,7 +46,7 @@ app.use(cors());
 app.use(express.json());
 
 
-
+app.use("/api", onlineMeetingRoutes); // 2. Add this route line
 app.use("/api/student", studentRoutes);
 app.use("/api/user", userAuthRoutes);
 app.use("/api/staff", staffRoutes);
