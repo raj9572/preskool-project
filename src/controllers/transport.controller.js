@@ -40,7 +40,7 @@ export const TransportController = {
 
   async update(req, res) {
     try {
-      const ok = await TransportModel.update(parseInt(req.params.id), req.body);
+      const ok = await TransportModel.update(req.params.id, req.body);
       if (!ok) return res.status(404).json({ success: false, message: "Transport not found" });
       res.json({ success: true, message: "Transport updated" });
     } catch (err) {

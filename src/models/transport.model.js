@@ -20,65 +20,98 @@ export const TransportModel = {
     return result.recordset[0];
   },
 
-  async create(data) {
-    const pool = await poolPromise;
-    const result = await pool.request()
-       .input("TransportID", sql.VarChar(50), data.transportId)
-      .input("TransportNumber", sql.NVarChar, data.transportNumber)
-      .input("TransportType", sql.NVarChar, data.transportType)
-      .input("TransporterName", sql.NVarChar, data.transporterName)
-      .input("OwnerName", sql.NVarChar, data.ownerName)
-      .input("JoiningDate", sql.Date, data.joiningDate)
-      .input("GPSNumber", sql.NVarChar, data.gpsNumber)
-      .input("Route", sql.NVarChar, data.route)
-      .input("Description", sql.NVarChar, data.description)
-      .input("Status", sql.NVarChar, data.status || "Active")
-      .query(`
-        INSERT INTO dbo.Transport
-        (TransportID, TransportNumber, TransportType, TransporterName, OwnerName,
-         JoiningDate, GPSNumber, Route, Description, Status)
-        VALUES
-        (@TransportID, @TransportNumber, @TransportType, @TransporterName, @OwnerName,
-         @JoiningDate, @GPSNumber, @Route, @Description, @Status);
+ async create(data) {
+  const pool = await poolPromise;
 
-        SELECT SCOPE_IDENTITY() AS TransportID;
-      `);
+  const result = await pool.request()
+    .input("TransportID", sql.VarChar(50), data.transportId)
+    .input("TransportNumber", sql.NVarChar(100), data.transportNumber)
+    .input("TransportType", sql.NVarChar(100), data.transportType || null)
+    .input("TransporterName", sql.NVarChar(200), data.transporterName || null)
+    .input("OwnerName", sql.NVarChar(200), data.ownerName || null)
+    .input("JoiningDate", sql.Date, data.joiningDate || null)
+    .input("GPSNumber", sql.NVarChar(100), data.gpsNumber || null)
+    .input("Route", sql.NVarChar(200), data.route || null)
+    .input("RouteName", sql.NVarChar(200), data.routeName || null)
+    .input("Price", sql.Decimal(10,2), data.price || null)
+    .input("Description", sql.NVarChar(500), data.description || null)
+    .input("Status", sql.NVarChar(50), data.status || "Active")
+    .query(`
+      INSERT INTO dbo.Transport
+      (
+      TransportID,
+        TransportNumber,
+        TransportType,
+        TransporterName,
+        OwnerName,
+        JoiningDate,
+        GPSNumber,
+        Route,
+        RouteName,
+        Price,
+        Description,
+        Status
+      )
+      VALUES
+      (
+        @TransportID,
+        @TransportNumber,
+        @TransportType,
+        @TransporterName,
+        @OwnerName,
+        @JoiningDate,
+        @GPSNumber,
+        @Route,
+        @RouteName,
+        @Price,
+        @Description,
+        @Status
+      );
 
-    return result.recordset[0];
-  },
+      SELECT SCOPE_IDENTITY() AS TransportID;
+    `);
 
-  async update(id, data) {
-    const pool = await poolPromise;
-    const result = await pool.request()
-      .input("TransportID", sql.VarChar(50), id)
-      .input("TransportNumber", sql.NVarChar, data.transportNumber)
-      .input("TransportType", sql.NVarChar, data.transportType)
-      .input("TransporterName", sql.NVarChar, data.transporterName)
-      .input("OwnerName", sql.NVarChar, data.ownerName)
-      .input("JoiningDate", sql.Date, data.joiningDate)
-      .input("GPSNumber", sql.NVarChar, data.gpsNumber)
-      .input("Route", sql.NVarChar, data.route)
-      .input("Description", sql.NVarChar, data.description)
-      .input("Status", sql.NVarChar, data.status)
-      .query(`
-        UPDATE dbo.Transport
-        SET
-          TransportNumber = COALESCE(@TransportNumber, TransportNumber),
-          TransportType   = COALESCE(@TransportType, TransportType),
-          TransporterName = COALESCE(@TransporterName, TransporterName),
-          OwnerName       = COALESCE(@OwnerName, OwnerName),
-          JoiningDate     = COALESCE(@JoiningDate, JoiningDate),
-          GPSNumber       = COALESCE(@GPSNumber, GPSNumber),
-          Route           = COALESCE(@Route, Route),
-          Description     = COALESCE(@Description, Description),
-          Status          = COALESCE(@Status, Status)
-        WHERE TransportID = @TransportID;
+  return result.recordset[0];
+},
 
-        SELECT @@ROWCOUNT AS affected;
-      `);
+// .input("TransportID", sql.VarChar(50), id)
+ async update(id, data) {
+  const pool = await poolPromise;
 
-    return result.recordset[0].affected > 0;
-  },
+  const result = await pool.request()
+    .input("TransportID", sql.VarChar(50), id)
+    .input("TransportNumber", sql.NVarChar(100), data.transportNumber || null)
+    .input("TransportType", sql.NVarChar(100), data.transportType || null)
+    .input("TransporterName", sql.NVarChar(200), data.transporterName || null)
+    .input("OwnerName", sql.NVarChar(200), data.ownerName || null)
+    .input("JoiningDate", sql.Date, data.joiningDate || null)
+    .input("GPSNumber", sql.NVarChar(100), data.gpsNumber || null)
+    .input("Route", sql.NVarChar(200), data.route || null)
+    .input("RouteName", sql.NVarChar(200), data.routeName || null)
+    .input("Price", sql.Decimal(10,2), data.price || null)
+    .input("Description", sql.NVarChar(500), data.description || null)
+    .input("Status", sql.NVarChar(50), data.status || null)
+    .query(`
+      UPDATE dbo.Transport
+      SET
+        TransportNumber = COALESCE(@TransportNumber, TransportNumber),
+        TransportType = COALESCE(@TransportType, TransportType),
+        TransporterName = COALESCE(@TransporterName, TransporterName),
+        OwnerName = COALESCE(@OwnerName, OwnerName),
+        JoiningDate = COALESCE(@JoiningDate, JoiningDate),
+        GPSNumber = COALESCE(@GPSNumber, GPSNumber),
+        Route = COALESCE(@Route, Route),
+        RouteName = COALESCE(@RouteName, RouteName),
+        Price = COALESCE(@Price, Price),
+        Description = COALESCE(@Description, Description),
+        Status = COALESCE(@Status, Status)
+      WHERE TransportID = @TransportID;
+
+      SELECT @@ROWCOUNT AS affectedRows;
+    `);
+
+  return result.recordset[0];
+},
 
   async delete(id) {
     const pool = await poolPromise;
